@@ -1,698 +1,789 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>mDowód – mObywatel 2.0</title>
-<link rel="shortcut icon" href="https://raw.githubusercontent.com/mobywatel-github/mobywatel-pwa/main/public/images/coi_common_ui_ic_mobywatel_logo.svg" type="image/x-icon">
-<meta name="theme-color" content="#121212">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="../manifest.json">
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+    <title>mObywatel 2.0</title>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#000000">
+</head>
+<body>
+    
 <style>
-/* Zaktualizowane zmienne - ciemny motyw */
+/* --- 1. Zmienne i Reset --- */
 :root {
-  --bg: #000000; /* Głęboka czerń */
-  --card: #1D1D1D; /* Ciemniejszy szary dla kart/elementów */
-  --text-primary: #FFFFFF;
-  --text-secondary: #AAAAAA;
-  --accent: #0A84FF; /* Kolor akcentu (iOS Blue) */
-  --red: #FF3B30; 
-  --green: #34C759;
-  --radius: 12px;
-  --shadow: 0 4px 12px rgba(0,0,0,0.4);
-  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-top: env(safe-area-inset-top, 0px);
+    --bg-dark: #000000;
+    --card-bg: #1C1C1E; /* Główny kolor tła dla elementów UI i karty */
+    --text-primary: #FFFFFF;
+    --text-secondary: #AAAAAA;
+    --accent-blue: #0A84FF;
+    --accent-green: #34C759;
+    --line-color: rgba(255, 255, 255, 0.1);
+    --radius: 12px;
+    --safe-area-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:'Inter', Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;color:var(--text-primary);-webkit-font-smoothing:antialiased;}
-img{display:block;max-width:100%;height:auto;pointer-events:none}
-a{text-decoration:none;color:inherit}
+*{box-sizing:border-box; font-family: 'Inter', Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;}
+html,body{height:100%; margin:0; padding:0; background:var(--bg-dark); color:var(--text-primary);}
+a{text-decoration:none; color:inherit}
+img{display:block; max-width:100%; height:auto;}
 
-/* App shell */
-.app{min-height:100vh;display:flex;flex-direction:column;padding-bottom:calc(90px + var(--safe-area-bottom));}
-main.container{flex:1;padding:0 16px;}
-
-/* Header (Góra ekranu) */
-.header{
-  padding-top: calc(16px + var(--safe-area-top));
-  padding-bottom: 8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position: sticky;
-  top: 0;
-  background: var(--bg);
-  z-index: 100;
-}
-.header-back{display:flex;align-items:center;font-size:17px;font-weight:400;color:var(--accent)}
-.header-back img{width:12px;height:20px;margin-right:4px}
-.header-title{flex:1;text-align:center;font-size:17px;font-weight:600;color:var(--text-primary)}
-.header-question{width:22px;height:22px;margin-left:8px;filter:grayscale(1) brightness(0.7);} /* Ikona pytajnika */
-
-/* Czas nad kartą */
-.document-time-info {
-  text-align:center;
-  font-size:13px;
-  color:var(--text-secondary);
-  margin-bottom:16px;
-  font-weight:400;
-}
-.document-time-info strong {font-weight:500;}
-
-/* mDowód Card (Główna Karta) */
-.mdowod-card{
-  background: #1C1C1E; /* Bardziej subtelny kolor tła karty */
-  border-radius:var(--radius);
-  padding:16px;
-  margin-bottom:20px;
-  position:relative;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  border: 0.5px solid #333; /* Subtelna ramka */
-}
-
-/* Wodny znak w tle - powtarzalny wzór RP */
-.mdowod-bg-overlay{
-  position:absolute;
-  inset:0;
-  opacity:0.04;
-  background-image:url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><text x="5" y="20" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text><text x="25" y="40" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text><text x="45" y="60" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text><text x="65" y="80" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text></svg>');
-  background-repeat:repeat;
-  pointer-events:none;
-}
-
-.mdowod-row{display:flex;align-items:flex-start;}
-.mdowod-col-left{flex-basis:45%;max-width:140px;margin-right:16px;}
-.mdowod-col-right{flex:1;font-size:14px;padding-top:10px;}
-
-/* Sekcja Zdjęcia (Lewa strona) */
-.mdowod-photo-box{
-  width:100%;
-  padding-bottom:120%; /* Proporcje zbliżone do dokumentowych */
-  background:#FF3040; /* Czerwony kolor tła dla orła */
-  border-radius:6px;
-  position:relative;
-  overflow:hidden;
-  margin-bottom:10px;
-}
-.mdowod-photo-box img.eagle-placeholder {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  height: auto;
-  filter:brightness(1.1);
-}
-
-.mdowod-flag-box{
-  width:100%;
-  height:30px;
-  background:var(--card); /* Zmienione, by flaga wyglądała jak w dokumencie */
-  border-radius:6px;
-  overflow:hidden;
-  position:relative;
-  text-align:center;
-  font-size:10px;
-  font-weight:600;
-  color:var(--text-secondary);
-  padding-top:4px;
-}
-.mdowod-flag-box::before {
-    content: '';
-    position: absolute;
+/* --- 2. Nagłówek i Główne Kontenery --- */
+.top_grid{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 16px 8px;
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    position: sticky;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-    background: #fff; /* Biały */
+    background: var(--bg-dark);
+    z-index: 100;
 }
-.mdowod-flag-box::after {
-    content: '';
+.action_grid{display: flex; align-items: center;}
+.back_img{width: 12px; height: 20px; margin-right: 6px; filter: invert(30%) sepia(80%) saturate(2000%) hue-rotate(190deg);} /* Symulacja strzalkawroc.png (niebieski) */
+.back_text{font-size: 17px; color: var(--accent-blue); margin: 0;}
+.title_text{font-size: 17px; font-weight: 600; margin: 0;}
+.help_img{width: 22px; height: 22px; filter: grayscale(1) brightness(0.7);} /* Symulacja znakzapytania.png */
+
+/* Dynamiczny czas */
+.time_text{
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: -8px 0 16px;
+    font-weight: 400;
+}
+.time_text strong {font-weight: 500; color: var(--text-primary);}
+
+
+/* --- 3. Karta mDowód (id_image_data) --- */
+.id_image_data{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    margin: 0 16px 20px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.id_image{ /* tlo.png - używane jako tło karty */
     position: absolute;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
-    height: 50%;
-    background: #DC143C; /* Czerwony */
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.04; /* Niska przezroczystość dla wzoru RP */
+    z-index: 0;
 }
-.mdowod-flag-box span {
+.id_image_data .inset{
+    /* To jest główny kontener dla treści karty, który daje marginesy wewnętrzne */
     position: relative;
     z-index: 1;
-    display: block;
-    color: var(--text-primary);
-    font-size:12px;
+    display: flex;
+    justify-content: space-between;
+}
+.id_own_image{ /* Twoje zdjęcie / Orzeł w czerwonym polu */
+    width: 45%;
+    max-width: 140px;
+    padding-bottom: 120%; /* Proporcje zdjęcia */
+    background: #FF3040; /* Czerwony kolor tła */
+    border-radius: 6px;
+    position: absolute; /* Używamy absolute i left/top by umieścić wewnątrz karty */
+    top: 16px;
+    left: 16px;
+    overflow: hidden;
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+    /* Symulacja orła, jeśli nie ma prawdziwego zdjęcia */
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PHBhdGggZD0iTTQ5IDNjNy0uMyAxMy41IDMgMTggNCAzLjUgLjIgNi42IDEuNiA5LjUgMy4zIDMuNyAyLjEgNS4yIDcgMi42IDEwLTEuNSAyLjMtMyA0LjUtNC43IDYuNC01IDUuNi0xMi4zIDguNi0yMC4xIDguN2gtLjUgMi4yYzguNiAwIDE1LjUtMi41IDIxLjctNy4xIDcuOC01LjkgMTMtMTQgMTQuNS0yMi45LjIgMCAuMy0uMS4zLS4zYTEzLjIgMTMuMiAwIDAgMC0zLjctMTMgMi4yIDIuMiAwIDAgMC0uMS0uMWMtMi41LTEuNy01LjEtMi42LTcuOC0zLjMtLjktLjItMS43LS41LTIuNy0uNC01LjUgLjYtMTAuNy0uNi0xNi0uMi02IC40LTEyIDEtMTgtLjItMi0uNC00LS43LTYtLjgtLjctLjEtMS41LS4xLTIuMi0uMS02LjMgMC0xMi41IDEuMy0xOC40IDMgNC40LS4yIDYuNy0uNCA5LTEuNCA0LS44IDcuNC0zLjEgOC41LjdDMjcuNyA4LjQgNDAgOC41IDQ5IDNaIiBmaWxsPSIjRkZGRkZGIi8+PHBhdGggZD0iTTI2LjcgNjYuNmMzLjIgMS41IDYgMy42IDguMiA1LjcgMS44IDEuNiAzLjIgMy41IDQuMyA1LjYtLjEuMS0uMi4zLS40LjQgMC0uMy41LS43LjgtMS4xLjItLjMuNS0uNi43LS45LjktMS40IDEuOC0yLjUgMi44LTMuNnMtMi42LTEuOS0zLjktMi44Yy0yLjUtMS43LTUtMy40LTcuNi01LTUgNS05LjIgMTEuMy0xMC40IDE4LjUtLjIgMS40LS41IDIuOC0uOCAzLjktLjYgMi40LTEuMiA0LjgtMS43IDcuMi0uNCAyLS44IDQtMS4xIDYtLjIgMS4yLS4yIDIuMi0uMSA0LjEtLjQgMS4yLS42IDIuNC0uNyAzLjctLjEuMyAwLS4xLjMtLjEuNmE4LjEgOC4xIDAgMCAwIDEuMyA0LjcgMi4zIDIuMyAwIDAgMCAuMSAuMmMuNy4yIDEuNS4yIDIuMS4xIDMtLjQgNi0uNSAzLTZjLTIuNC0yLjctNC4zLTUuNS01LTkuMS0xLjItNC42LS42LTkuMyAxLjItMTMuNy42LTEuNSAxLjItMy4xIDEuNy00LjYgLjgtMi40IDEuNi00LjggMi40LTcuMi41LTEuMyAxLjEtMi42IDEuNS00em0zOC40IDIuMmMtMi4xIDEuNC00LjMgMi44LTYuNCA0LTUuMiAzLjEtMTIuNSA0LjQtMTkuMyAzLjQtNy43LTEuMS0xMy42LTUuOC0xNi0xMi41LS42LTEuOS0xLjItMy44LTEuNy01LjgtLjUtMi0uOS00LjEtMS4zLTYuMS0uMy0xLjQtLjUtMi44LS41LTQuMyAwLTEuNS4xLTMuMS41LTVsLjctMy4zYy43LTMuMiAxLjYtNi40IDIuNi05LjZsMi42LTguMWMuNi0xLjkgMS41LTIuNyAyLjctMi43IDEuMSAwIDEuOSA4LjMgMS45IDkuMiAwIDMuMyAwIDYuNS0uMSA5LjdzLjEgNi4yLjEgOS42Yy41LjYgMS40IDEuMSAyLjcgMS43czIuNi44IDQgMS42Yy0uMy41LS42IDEtLjkgMS41LS4yLjQtLjQgLjctLjUgMS4xLS40LjktLjggMS44LTEuMSAyLjctLjIgLjUtLjIgMS4xLS40IDEuNnMtLjIgMS0uMyAxLjVjLS4xLjQtLjIgLjktLjIgMS40LS4xLjUtLjIgMS0uMiAxLjUtLjIgMS0uMiAyLS4yIDMuM3MtLjMgMi40LS4zIDMuNmMwIDIgMCAzLjcuMSAxY00zOC4yIDQxYy0xLjMtLjEtMi42LS4xLTMuOS0uMS0uNyAwLTEuMyAwLTIgLjFzLTEuNC4xLTIuMS40Yy0yLjUgLjgtMy42IDIuNC0zLjQgNS4xLjQgNi40IDMuNSA5LjggOC4zIDEyLjggMi45IDEuOCA2LjEgMy4zIDkuNSAzLjhIOS4yYy0xLjUgMC0yLjUgMS0yLjUgMi41YTEuMyAxLjMgMCAwIDAgLjIgLjUgMTMuMyAxMy4zIDAgMCAxIDUuMy0xLjMgMTQgMTQgMCAwIDEgNi4zLS41YzguMy41IDE1LjYgMy41IDIxLjUgOC43LjcgLjcgMS4zIDEuNCAxLjcgMi4zLjIgLjMgMCAuNi0uMiAxYWE3LjEgNy4xIDAgMCAxLTMuNSA0LjJjLS45LjItMS44LjMtMi43LjNsLTcuOC0uNWMtNC0uMy03LjktMS4zLTExLjctMy42LTQuOS0zLTcuNS02LjktOS4yLTExLjctLjQtMS4xLS43LTIuNC0uOC0zLjYtLjEtLjktLjEtMS44LS4xLTIuNyAwLS42LjEtMS40LjItMmwuMy0xLjhhLjMgLjMgMCAwIDEtLjEtLjQgMy45IDMuOSAwIDAgMS0uNS0uNmMtLjItLjMtLjQtLjYtLjYtLjktLjEtLjItLjItLjUtLjMtLjcgMC0uMSAwLS4xIDAtLjItLjQtLjQtLjctLjctMS0xLjEtMS41LS44LTIuMi0xLjMtMy4xLTEuN3MtMS45LS45LTMuMS0xLjRsLS41LS4xYy0uNC0uMS0uOC0uMi0xLjMtLjJ6TTQ5IDQyYy02LjYgMC0xMy0xLjYtMTguMy00LjMtMi4zLTEuMi00LjEtMi45LTUuMy01LTEuNS0yLjYtMS42LTUuNi0uNC04LjcgMi01IDUuNi05LjUgMTAtMTIuNyAzLjYtMi41IDcuOC00LjQgMTIuNC01LjUgMi4yLS41IDQuNC0uNyA2LjUtLjggUzQ2IDcgNTEuNSA3IDU5LjUgOCA2NC41IDkuNGM1LjQgMS41IDEwLjIgNCAxNC4zIDcuMSAyIDEuNSAzLjUgMy40IDQuNCA1LjUgMS4xIDIuNSAxIDUuNC0uNCA3LjgtMi41IDQuNi02LjcgNy44LTExLjYgOS42LTQuOCAxLjgtMTAuMSAyLjItMTUuNSAyLjMieiIgZmlsbD0iI2ZmZmZmZiIvPjwvc3Zn>') !important;
+}
+
+.flag_video, .eagle_video, .eagle_text {
+    /* Ustawienie flagi i godła, aby były obok zdjęcia w lewej kolumnie */
+    position: relative;
+    z-index: 1;
+    margin-top: 10px;
+    width: 45%;
+    max-width: 140px;
+    left: 16px;
+}
+.flag_video{
+    height: 30px;
+    width: 100%;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    background: linear-gradient(to bottom, #fff 50%, #DC143C 50%);
+}
+.eagle_video{ /* Symulacja godła */
+    width: 50px;
+    height: auto;
+    filter: brightness(1.5); /* Rozjaśnienie, jeśli użyty jest czarny SVG/PNG */
+}
+.eagle_text{
+    position: absolute;
+    top: 50px; /* Dostosowanie pozycji tekstu RP */
+    left: 170px; /* Umieszczenie obok flagi */
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.2;
+    display: none; /* Ukrywamy, bo używamy tekstu w tle. Zostawiamy, jeśli chcesz, by był obok flagi/godła */
+}
+
+/* Dane w karcie */
+.id_data_grid{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: calc(55% - 32px); /* Prawa kolumna */
+    max-width: 180px;
+}
+.data_holder{margin-bottom: 12px;}
+.data_title{font-size: 12px; color: var(--text-secondary); margin: 0;}
+.data_value{font-size: 16px; font-weight: 500; margin: 2px 0 0;}
+.data_value.firstname, .data_value.surname{font-size: 18px; font-weight: 600; color: var(--text-primary);} /* Wyróżnienie imienia i nazwiska */
+
+/* Status na dole karty */
+.id_bottom{
+    position: relative;
+    z-index: 1;
+    padding: 16px 16px 8px;
+    margin: 0 16px 20px;
+    border-top: 0.5px solid var(--line-color);
+}
+.id_bottom .bottom_grid{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+.id_bottom .bottom_image{
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    filter: sepia(1) hue-rotate(90deg) brightness(1.2); /* Barwienie SVG na zielono */
+}
+.id_bottom .bottom_text{
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--accent-green) !important;
+}
+
+
+/* --- 4. Skróty pod kartą (other_grid) --- */
+.other_grid{
+    padding: 0 16px;
+}
+.bottom_holder{
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
     font-weight: 500;
-    line-height: 1;
+    cursor: pointer;
 }
+.bottom_holder:last-child{margin-bottom: 0;}
 
-/* Sekcja Danych (Prawa strona) */
-.mdowod-data-label{font-size:12px;color:var(--text-secondary);margin-bottom:0px;line-height:1.4}
-.mdowod-data-value{font-size:16px;font-weight:500;margin-bottom:12px;line-height:1.2}
-.mdowod-data-value.large-data {font-size: 18px; font-weight: 600; color: #fff; line-height: 1.2;}
-.mdowod-data-value:last-child{margin-bottom:0}
-
-/* Status bar na dole karty */
-.mdowod-status-bar{
-  display:flex;
-  align-items:center;
-  padding-top:16px;
-  margin-top:16px;
-  font-size:15px;
-  font-weight:600;
-  color:var(--green);
+.bottom_holder .bottom_grid{
+    display: flex;
+    align-items: center;
+    justify-content: start;
 }
-.mdowod-status-bar img{width:20px;height:20px;margin-right:8px;filter:sepia(1) hue-rotate(90deg) brightness(1.2);}
-
-/* Skróty pod kartą */
-.shortcuts-grid{
-  display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:8px;
-  margin-bottom:24px;
+.bottom_holder .bottom_image{
+    width: 30px;
+    height: 30px;
+    margin-right: 12px;
+    border-radius: 8px;
+    background: #3c3c3c;
+    padding: 5px;
+    filter: brightness(1.2);
 }
-.shortcut-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  padding:10px 4px;
-  border-radius:10px;
-  background:var(--card);
-  font-size:12px;
-  color:var(--text-primary);
-  height:90px;
-  justify-content:center;
+.bottom_holder .bottom_image[src$="dane.png"]{background: #723c72;} /* Różowy dla "Dane dokumentu" */
+.bottom_holder .bottom_image[src$="ptaszekqr.png"]{background: #004b92;} /* Niebieski dla "Potwierdź dane" */
+.bottom_holder .bottom_text{
+    margin: 0;
+    color: var(--text-primary) !important;
+    font-weight: 500;
 }
-.shortcut-icon{
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  background:#2e2e2e;
-  margin-bottom:6px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.shortcut-icon img{width:20px;height:20px;filter:brightness(1.5);}
-.shortcut-icon.pink {background:#723c72;} /* Dostosowanie kolorów ikon do zrzutów */
-.shortcut-icon.blue {background:#004b92;}
-.shortcut-icon.grey {background:#3c3c3c;}
-
-/* Sekcja 'Seria i numer mDowodu' (Otwiera Modal) */
-.serial-info-link{
-    padding:14px 16px;
-    background:var(--card);
-    border-radius:var(--radius);
-    margin-bottom:20px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    font-size:15px;
-    font-weight:500;
-}
-.serial-info-link img{width:20px;height:20px;filter:grayscale(1) opacity(0.5);}
-
-/* Modal / Bottom Sheet dla szczegółów (Drugi zrzut ekranu) */
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-  display:none;
-  align-items:flex-end;
-  justify-content:center;
-  z-index:120;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-}
-.modal.show{display:flex}
-.sheet{
-  width:100%;
-  max-width:720px;
-  border-radius:16px 16px 0 0;
-  background:#1C1C1E; /* Tło modala */
-  box-shadow:0 -5px 20px rgba(0,0,0,0.3);
-  transform:translateY(100%);
-  transition:transform 0.3s cubic-bezier(0.3, 0.7, 0.4, 1.0);
-  padding-bottom:calc(24px + var(--safe-area-bottom));
-  max-height: 90vh;
-  overflow-y: auto;
-}
-.modal.show .sheet{transform:translateY(0)}
-.sheet-content{padding:0 16px;}
-
-/* Modal Header */
-.sheet-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 16px 10px;
-  background: #1C1C1E;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.sheet-header-title{flex:1;text-align:center;font-size:17px;font-weight:600;color:var(--text-primary)}
-
-/* Sekcje w Modalu */
-.sheet-section{
-    margin-bottom:0;
-    padding:16px 0;
-    border-bottom:0.5px solid #333; /* Linia rozdzielająca sekcje */
-    color:var(--text-primary);
-}
-.sheet-section:last-child{border-bottom:none;}
-
-.sheet-item-full {
-    margin-bottom:16px;
-    font-size:15px;
-}
-.sheet-item-full-label {
-    font-size:14px;
-    color:var(--text-secondary);
-    margin-bottom:4px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-.sheet-item-full-value {
-    font-size:24px;
-    font-weight:600;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-}
-.sheet-item-meta {
-    font-size:12px;
-    color:#777;
-    margin-top:4px;
-}
-.sheet-copy-btn{
-    background:#333;
-    color:var(--accent);
-    padding:4px 10px;
-    border:none;
-    border-radius:6px;
-    cursor:pointer;
-    font-size:14px;
-    font-weight:500;
-}
-
-.sheet-data-row {
-    margin-bottom: 20px;
-}
-
-.sheet-collapsible-title {
-    font-size:17px;
-    font-weight:600;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:16px 0;
-    cursor:pointer;
-}
-.sheet-collapsible-title img {
-    width:16px;
-    height:16px;
-    filter:grayscale(1) opacity(0.5);
-    transform: rotate(0deg);
+.action_arrow{
+    width: 16px;
+    height: 16px;
+    filter: grayscale(1) opacity(0.5);
     transition: transform 0.3s ease;
 }
-.sheet-collapsible-title.expanded img {
-    transform: rotate(180deg);
+
+/* Sekcja dodatkowych danych (Collapsible) */
+.info_holder .action_arrow{transform: rotate(90deg);}
+.info_holder.open .action_arrow{transform: rotate(270deg);}
+
+.info_holder.open .additional_holder{
+    max-height: 1000px; /* Wystarczająco dużo, by pomieścić całą zawartość */
+    padding-top: 10px;
 }
-.sheet-collapsible-content {
+
+.additional_holder{
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    padding-bottom: 16px;
-}
-
-.sheet-update-info {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:12px 0;
-    font-size:15px;
-}
-.sheet-update-info button {
-    background:var(--accent);
-    color:#fff;
-    padding:6px 12px;
-    border:none;
-    border-radius:8px;
-    font-size:14px;
-    font-weight:500;
-}
-
-/* Panel edycji (ukryty domyślnie, tylko dla demo) */
-.actor-panel {
-    background: #2e2e2e;
-    padding: 16px;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-.actor-panel input {
+    transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+    padding-top: 0;
     width: 100%;
-    padding: 10px 12px;
-    margin: 6px 0;
-    border-radius: 8px;
-    border: 1px solid #4a4a4a;
-    background: #121212;
-    color: var(--text-primary);
-    font-size: 16px;
 }
-.actor-panel button {
-    background: var(--accent);
+.additional_grid{
+    padding: 10px 0;
+    border-bottom: 0.5px solid #333;
+}
+.additional_title{font-size: 13px; color: var(--text-secondary); margin: 0;}
+.additional_subtitle{font-size: 15px; font-weight: 500; color: var(--text-primary); margin: 2px 0 0;}
+
+/* Sekcja Aktualizacja */
+.bottom_update{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: none !important;
+}
+.bottom_update_grid{flex: 1;}
+.bottom_update_text{font-size: 15px; color: var(--text-secondary); margin: 0 0 2px 0 !important;}
+.bottom_update_value{font-size: 15px; font-weight: 500; color: var(--text-primary); margin: 0 !important;}
+.main_button.update{
+    background: var(--accent-blue);
     color: #fff;
-    padding: 10px 16px;
+    padding: 6px 12px;
     border: none;
     border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    font-weight: 600;
-    margin-top: 10px;
+}
+
+
+/* --- 5. Modal / Pop-up (confirm) - Drugi zrzut ekranu --- */
+.confirm{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 120;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: opacity 0.3s ease;
+}
+.confirm.open{display: flex;}
+
+.page_other{
     width: 100%;
-    font-size: 16px;
+    max-width: 400px;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--card-bg);
+    padding-bottom: calc(24px + var(--safe-area-bottom));
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.3, 0.7, 0.4, 1.0);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.confirm.open .page_other{transform: translateY(0);}
+
+.confirm_title{
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    padding: 12px 16px;
+    margin: 0;
+    border-bottom: 0.5px solid var(--line-color);
+    position: sticky;
+    top: 0;
+    background: var(--card-bg);
+}
+
+.confirm_info{padding: 0 16px;}
+.confirm_box{
+    padding: 16px 0;
+    border-bottom: 0.5px solid #333;
+    margin-bottom: 0;
+}
+.confirm_box:last-of-type{border-bottom: none;}
+
+.box_top{font-size: 14px; color: var(--text-secondary); margin: 0;}
+.box_value{font-size: 16px; font-weight: 500; color: var(--text-primary); margin: 4px 0 0;}
+.box_value.box_highlight{font-size: 24px; font-weight: 600; margin-top: 8px;}
+
+.confirm_box button{
+    float: right;
+    margin-top: -30px;
+    background: #333;
+    color: var(--accent-blue);
+    padding: 4px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.confirm_close, .confirm_back{
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--accent-blue);
+    text-align: center;
+    padding: 16px 0;
+    cursor: pointer;
+    margin: 0;
+}
+.confirm_back{
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 0 16px 16px;
+}
+.close_page_1{
+    border-top: 0.5px solid var(--line-color);
+}
+.close_page_2{
+    display: none; /* Ukrywamy "Zamknij" w widoku szczegółowym */
+}
+.confirm .back{
+    display: block;
+    color: var(--accent-blue);
+    font-size: 17px;
+    text-align: left;
+    padding: 16px;
+}
+.confirm .back_img{
+    width: 12px;
+    height: 20px;
+    margin-right: 6px;
+    filter: invert(30%) sepia(80%) saturate(2000%) hue-rotate(190deg);
 }
 
 
-/* Bottom Navigation */
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:rgba(28, 28, 30, 0.9);
-  border-top:0.5px solid #333;
-  display:flex;
-  justify-content:space-around;
-  padding-bottom:var(--safe-area-bottom);
-  z-index:110;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+/* --- 6. Dolna Nawigacja (bottom_bar) --- */
+.bottom_bar{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(28, 28, 30, 0.9);
+    border-top: 0.5px solid #333;
+    padding-bottom: var(--safe-area-bottom);
+    z-index: 110;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
-.nav-item{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:8px 0;
-  font-size:10px;
-  color:var(--text-secondary);
-  font-weight:500;
+.bottom_bar_grid{
+    display: flex;
+    justify-content: space-around;
+    padding-top: 4px;
 }
-.nav-item-icon{
-  width:28px;
-  height:28px;
-  margin-bottom:4px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.bottom_element_grid{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    cursor: pointer;
 }
-.nav-item-icon img{width:22px;height:22px;filter:grayscale(1) opacity(0.5);}
-.nav-item.active{color:var(--accent)}
-.nav-item.active .nav-item-icon img{filter:none;}
+.bottom_element_image{
+    width: 28px;
+    height: 28px;
+    margin-bottom: 4px;
+    filter: grayscale(1) opacity(0.5); /* Domyślne nieaktywne ikony */
+    background-size: cover;
+}
+/* Aktywne ikony - klasa 'documents_open' i tekst 'open' */
+.bottom_element_image.documents_open{filter: none;}
+.bottom_element_text{
+    font-size: 10px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin: 0;
+}
+.bottom_element_text.open{color: var(--accent-blue);}
 
-/* Responsive dla lepszego wyglądu na dużych ekranach */
-@media (min-width:720px){
-  main.container{max-width:400px;margin:0 auto;}
-  .sheet{max-width:400px;margin:0 auto;}
-  .bottom-nav{max-width:400px;margin:0 auto;left:auto;right:auto;}
-}
-
+/* Ikony bottom bar (symulacja obrazków, najlepiej zastąpić SVG) */
+.bottom_element_image.home{ background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTYgMTJoMTJtLTYgNnY2Ii8+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTEyIDMgNHYyYy01IDAtNiA1LTMgN3MiNyA0IDcgMGMxLTItMi03LTMtOHYtMiIgLz48L3N2Z3M+");}
+.bottom_element_image.documents_open{ background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE2LjM1IDcuMzctMi40Mi0yLjQxTDEyLjM1IDYuNTFsMS40MiAxLjQyeiIvPjxwYXRoIHN0cm9rZT0iIzBhODQyRiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTEwIDE1LjkxIDUuNTktNS41OWExLjkgMS45IDAgMCAwIDAtMi42NyAxLjg3IDEuODcgMCAwIDAtMi42NiAwbC01LjU2IDUuNTVhMi4wMiAyLjAyIDAgMCAwIDAgMi44NmwxLjggMS44YzEuMTggMS4wMiAzIDEuMDIgNC4wNi4wMm0tOS01YTMgMyAwIDAgMS0uMzktMi4yOCAxLjYgMS42IDAgMCAxIC43NC0uNjEuNjkuNjkgMCAwIDEgLjcuMi43LjcgMCAwIDEgLjYgLjUgMS44IDEuOCAwIDAgMCAuMS44YTMgMyAwIDAgMS01IDEuNSIvPjwvc3ZnPg==");}
+.bottom_element_image.services{ background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTMgNWg2YTIgMiAwIDAgMSAyIDJ2NGEyIDIgMCAwIDEtMiAybS01LTkgNC00djggTSQgMTJhMiAyIDAgMCAxIDIgMiA0IDQgMCAwIDAgMiA0IDIgMiAwIDAgMCA0IDIgOCA4IDAgMCAwLTEwLTgiLz48L3N2Z3M+");}
+.bottom_element_image.qr{ background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTEwIDE3IDE0IDE3TTEwIDIxIDE0IDIxTTMgMTRoN203IDBoNG0tNC03aDRtLTIgM1YxM0g0bTcgM2g3bS0zLTdoNG0tNC03aDRhMiAyIDAgMCAwIDIgMm0tMTgtOGE0IDQgMCAwIDEtOCA0djE2YTIgMiAwIDAgMCAyIDJzNiAwIDcgMG03LTQgMi4xNy0uMTNBNiA2IDAgMCAwIDE1LjY2IDIuNDMiLz48L3N2Z3M+");}
+.bottom_element_image.more{ background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTUgMTJIMi0yTTEwIDEwaDRNNyAxMmE1IDUgMCAwIDAgMTAgMHY1IDVzLTEuNSA0LTYgNC02LTRsLTItMlY5Ii8+PC9zdmc+");}
 </style>
-</head>
 
-<body>
-<div class="app">
+<script>
+    // --- SKRYPTY DYNAMICZNE ---
 
-  <header class="header">
-    <a href="#" class="header-back">
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE1IDIwLTgtOCAzLTQtMy00djQgbTgtOCA4IDh2LTMuNzUgbS00LTQgbTEwIDQgMS00djMiLz48L3N2ZyI alt="Wróć">
-        Wróć
-    </a>
-    <div class="header-title">mDowód</div>
-    <img class="header-question" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNOC45NDYgMTMuODE2Yy0uNTcuMjU0LS45NDYuNzkyLS45NDYgMS4zOTR2Mi42MjhIMTRWMjAuNjZtLTIuMzE2LTMuNTQ2YzAtLjM0NC4yMDItLjY0NC40OTMtLjc5NC4yODgtLjE0Mi42MjctLjE1NC45MDMtLjA5LjU1NS4xMjggMS4xMTMtLjE4NiAxLjEzNC0uNzM1LjAyLS41NTctLjM1OC0uOTg4LS44MjgtMS4xNzItLjE1LS4wNTgtLjY3Ny0uMjEtMS4xNzMtLjQzNS0uNDk5LS4yMjUtLjk2LS41NzctMS4yOTMtLjk5Mi0uNTYyLS43MDctLjcxMy0xLjczNC0uMzU0LTIuNTIuNTgyLTEuMzI4IDEuNzAyLTIuMjMgMy4wMjQtMi41NTIuOTktLjI0NCAyLjA2LS4wODQgMi44OTguNDMyYTMuODQgMy44NCAwIDAgMSAxLjM4NiAzLjY1NU0xMi42NjYgNC4zMzRsLjAwOCAwIi8+PC9zdmc+" alt="Pomoc">
-  </header>
+    // 1. Ustawienie Danych Początkowych (pobierane z Twoich istniejących ID)
+    function initializeData() {
+        // Dane pobierane z identyfikatorów
+        document.getElementById('name').textContent = "discord.gg/fobywatel";
+        document.getElementById('surname').textContent = "discord.gg/fobywatel";
+        document.getElementById('nationality').textContent = "POLSKIE";
+        document.getElementById('birthday').textContent = "9.07.2025";
+        document.getElementById('pesel').textContent = "00000000000";
 
-  <main class="container">
-    <div class="document-time-info" id="dynamic-time"></div>
+        // Dane do Modala Szczegółów (symulowane)
+        const date = new Date();
+        const year = date.getFullYear();
+        document.querySelector('.box_value.box_highlight').textContent = "MEVM 21949"; // Seria i numer
+        // Domyślna data ważności i wydania (symulowana na podstawie zrzutów)
+        document.querySelectorAll('.confirm_box .box_value')[1].textContent = "8.08.2035"; // Termin ważności
+        document.querySelectorAll('.confirm_box .box_value')[2].textContent = "8.08.2025"; // Data wydania
 
-    <div class="mdowod-card">
-      <div class="mdowod-bg-overlay"></div>
-      
-      <div class="mdowod-row">
-        <div class="mdowod-col-left">
-          <a href="#" onclick="showActorPanel(event)">
-            <div class="mdowod-photo-box">
-              <img id="actor-photo" class="eagle-placeholder" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PHBhdGggZD0iTTQ5IDNjNy0uMyAxMy41IDMgMTggNCAzLjUgLjIgNi42IDEuNiA5LjUgMy4zIDMuNyAyLjEgNS4yIDcgMi42IDEwLTEuNSAyLjMtMyA0LjUtNC43IDYuNC01IDUuNi0xMi4zIDguNi0yMC4xIDguN2gtLjUgMi4yYzguNiAwIDE1LjUtMi41IDIxLjctNy4xIDcuOC01LjkgMTMtMTQgMTQuNS0yMi45LjIgMCAuMy0uMS4zLS4zYTEzLjIgMTMuMiAwIDAgMC0zLjctMTMgMi4yIDIuMiAwIDAgMC0uMS0uMWMtMi41LTEuNy01LjEtMi42LTcuOC0zLjMtLjktLjItMS43LS41LTIuNy0uNC01LjUgLjYtMTAuNy0uNi0xNi0uMi02IC40LTEyIDEtMTgtLjItMi0uNC00LS43LTYtLjgtLjctLjEtMS41LS4xLTIuMi0uMS02LjMgMC0xMi41IDEuMy0xOC40IDMgNC40LS4yIDYuNy0uNCA5LTEuNCA0LS44IDcuNC0zLjEgOC41LjdDMjcuNyA4LjQgNDAgOC41IDQ5IDNaIiBmaWxsPSIjRkZGRkZGIi8+PHBhdGggZD0iTTI2LjcgNjYuNmMzLjIgMS41IDYgMy42IDguMiA1LjcgMS44IDEuNiAzLjIgMy41IDQuMyA1LjYtLjEuMS0uMi4zLS40LjQgMC0uMy41LS43LjgtMS4xLjItLjMuNS0uNi43LS45LjktMS40IDEuOC0yLjUgMi44LTMuNnMtMi42LTEuOS0zLjktMi44Yy0yLjUtMS43LTUtMy40LTcuNi01LTUgNS05LjIgMTEuMy0xMC40IDE4LjUtLjIgMS40LS41IDIuOC0uOCAzLjktLjYgMi40LTEuMiA0LjgtMS43IDcuMi0uNCAyLS44IDQtMS4xIDYtLjIgMS4yLS4yIDIuMi0uMSA0LjEtLjQgMS4yLS42IDIuNC0uNyAzLjctLjEuMyAwLS4xLjMtLjEuNmE4LjEgOC4xIDAgMCAwIDEuMyA0LjcgMi4zIDIuMyAwIDAgMCAuMSAuMmMuNy4yIDEuNS4yIDIuMS4xIDMtLjQgNi0uNSAzLTZjLTIuNC0yLjctNC4zLTUuNS01LTkuMS0xLjItNC42LS42LTkuMyAxLjItMTMuNy42LTEuNSAxLjItMy4xIDEuNy00LjYgLjgtMi40IDEuNi00LjggMi40LTcuMi41LTEuMyAxLjEtMi42IDEuNS00em0zOC40IDIuMmMtMi4xIDEuNC00LjMgMi44LTYuNCA0LTUuMiAzLjEtMTIuNSA0LjQtMTkuMyAzLjQtNy43LTEuMS0xMy42LTUuOC0xNi0xMi41LS42LTEuOS0xLjItMy44LTEuNy01LjgtLjUtMi0uOS00LjEtMS4zLTYuMS0uMy0xLjQtLjUtMi44LS41LTQuMyAwLTEuNS4xLTMuMS41LTVsLjctMy4zYy43LTMuMiAxLjYtNi40IDIuNi05LjZsMi42LTguMWMuNi0xLjkgMS41LTIuNyAyLjctMi43IDEuMSAwIDEuOSA4LjMgMS45IDkuMiAwIDMuMyAwIDYuNS0uMSA5LjdzLjEgNi4yLjEgOS42Yy41LjYgMS40IDEuMSAyLjcgMS43czIuNi44IDQgMS42Yy0uMy41LS42IDEtLjkgMS41LS4yLjQtLjQgLjctLjUgMS4xLS40LjktLjggMS44LTEuMSAyLjctLjIgLjUtLjIgMS4xLS40IDEuNnMtLjIgMS0uMyAxLjVjLS4xLjQtLjIgLjktLjIgMS40LS4xLjUtLjIgMS0uMiAxLjUtLjIgMS0uMiAyLS4yIDMuM3MtLjMgMi40LS4zIDMuNmMwIDIgMCAzLjcuMSAxY00zOC4yIDQxYy0xLjMtLjEtMi42LS4xLTMuOS0uMS0uNyAwLTEuMyAwLTIgLjFzLTEuNC4xLTIuMS40Yy0yLjUgLjgtMy42IDIuNC0zLjQgNS4xLjQgNi40IDMuNSA5LjggOC4zIDEyLjggMi45IDEuOCA2LjEgMy4zIDkuNSAzLjhIOS4yYy0xLjUgMC0yLjUgMS0yLjUgMi41YTEuMyAxLjMgMCAwIDAgLjIgLjUgMTMuMyAxMy4zIDAgMCAxIDUuMy0xLjMgMTQgMTQgMCAwIDEgNi4zLS41YzguMy41IDE1LjYgMy41IDIxLjUgOC43LjcgLjcgMS4zIDEuNCAxLjcgMi4zLjIgLjMgMCAuNi0uMiAxYWE3LjEgNy4xIDAgMCAxLTMuNSA0LjJjLS45LjItMS44LjMtMi43LjNsLTcuOC0uNWMtNC0uMy03LjktMS4zLTExLjctMy42LTQuOS0zLTcuNS02LjktOS4yLTExLjctLjQtMS4xLS43LTIuNC0uOC0zLjYtLjEtLjktLjEtMS44LS4xLTIuNyAwLS42LjEtMS40LjItMmwuMy0xLjhhLjMgLjMgMCAwIDEtLjEtLjQgMy45IDMuOSAwIDAgMS0uNS0uNmMtLjItLjMtLjQtLjYtLjYtLjktLjEtLjItLjItLjUtLjMtLjcgMC0uMSAwLS4xIDAtLjItLjQtLjQtLjctLjctMS0xLjEtMS41LS44LTIuMi0xLjMtMy4xLTEuN3MtMS45LS45LTMuMS0xLjRsLS41LS4xYy0uNC0uMS0uOC0uMi0xLjMtLjJ6TTQ5IDQyYy02LjYgMC0xMy0xLjYtMTguMy00LjMtMi4zLTEuMi00LjEtMi45LTUuMy01LTEuNS0yLjYtMS42LTUuNi0uNC04LjcgMi01IDUuNi05LjUgMTAtMTIuNyAzLjYtMi41IDcuOC00LjQgMTIuNC01LjUgMi4yLS41IDQuNC0uNyA2LjUtLjhTNDYgNyA1MS41IDcgNTkuNSA4IDY0LjUgOS40YzUuNCAxLjUgMTAuMiA0IDE0LjMgNy4xIDIgMS41IDMuNSAzLjQgNC40IDUuNSAxLjEgMi41IDEgNS40LS40IDcuOC0yLjUgNC42LTYuNyA3LjgtMTEuNiA5LjYtNC44IDEuOC0xMC4xIDIuMi0xNS41IDIuMnoiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zw==" alt="Orzeł w tle">
-            </div>
-          </a>
+        // Dane w sekcji "Twoje dodatkowe dane" (symulowane)
+        document.getElementById('familyName').textContent = "DEMO";
+        document.getElementById('sex').textContent = "Mężczyzna";
+        document.getElementById('fathersFamilyName').textContent = "DEMO";
+        document.getElementById('mothersFamilyName').textContent = "DEMO";
+        document.getElementById('birthPlace').textContent = "Planet Earth";
+        document.getElementById('countryOfBirth').textContent = "Polska";
+        document.getElementById('adress').textContent = "Warszawa, ul. Testowa 1";
+        document.querySelector('.home_date').textContent = "24.12.2024";
 
-          <div class="mdowod-flag-box">
-             <span>Rzeczpospolita Polska</span>
-          </div>
+        // Ostatnia aktualizacja
+        document.querySelector('.bottom_update_value').textContent = "24.12.2024";
+    }
+
+    // 2. Dynamiczny Zegar (zgodnie z prośbą)
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+        // Fikcyjna data dokumentu (zgodnie ze zrzutem)
+        const documentDate = "08.08.2025";
+
+        document.getElementById('time').innerHTML = `${timeString} ${documentDate}`;
+    }
+
+    // 3. Obsługa Modala/Pop-upu (Seria i numer mDowodu, Dane dokumentu)
+    function openPage(pageNumber) {
+        const confirmModal = document.querySelector('.confirm');
+        confirmModal.classList.add('open');
+
+        // Pokaż odpowiednią stronę
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+        document.querySelector(`.page_${pageNumber}`).style.display = 'block';
+    }
+
+    function closePage() {
+        const confirmModal = document.querySelector('.confirm');
+        confirmModal.classList.remove('open');
+    }
+
+    // 4. Obsługa Collapsible (Twoje dodatkowe dane)
+    function toggleAdditionalData(event) {
+        event.preventDefault(); // Zapobieganie domyślnej akcji
+        const holder = document.querySelector('.info_holder');
+        holder.classList.toggle('open');
+    }
+
+    // Dodanie event listenera dla collapsible
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeData();
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        const collapsible = document.querySelector('.info_holder');
+        if (collapsible) {
+            collapsible.addEventListener('click', toggleAdditionalData);
+        }
+
+        // Używamy event delegation do otwierania modala z karty i linku
+        document.querySelector('.id_bottom').nextElementSibling.querySelector('.bottom_holder:nth-child(2)').addEventListener('click', () => openPage(3)); // Dane dokumentu
+        document.querySelectorAll('.confirm_box').forEach(box => {
+            if (box.querySelector('.main_button')) {
+                box.querySelector('.main_button').addEventListener('click', () => alert('Skopiowano!'));
+            }
+        });
+
+        // Wróć z modala do ekranu głównego (technicznie zamknięcie modala)
+        document.querySelectorAll('.confirm_back').forEach(btn => btn.addEventListener('click', closePage));
+    });
+</script>
+
+    <div class="top_grid">
+        <div class="action_grid">
+            <img src="strzalkawroc.png" class="back_img">
+            <p onclick="sendTo('home')" class="back_text">Wróć</p>
         </div>
-
-        <div class="mdowod-col-right">
-          <div class="mdowod-data-label">Imię (imiona)</div>
-          <div class="mdowod-data-value large-data" id="actor-name-short">discord.gg/fobywatel</div>
-
-          <div class="mdowod-data-label">Nazwisko</div>
-          <div class="mdowod-data-value large-data" id="actor-surname">discord.gg/fobywatel</div>
-
-          <div class="mdowod-data-label">Obywatelstwo</div>
-          <div class="mdowod-data-value">POLSKIE</div>
-
-          <div class="mdowod-data-label">Data urodzenia</div>
-          <div class="mdowod-data-value" id="actor-dob">9.07.2025</div>
-
-          <div class="mdowod-data-label">Numer PESEL</div>
-          <div class="mdowod-data-value" id="actor-pesel">00000000000</div>
-        </div>
-      </div>
-
-      <div class="mdowod-status-bar">
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjM0Q4MTBGIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJtNSAxMiA1IDUgOS05Ii8+PC9zdmc+" alt="Ikona Checkmark">
-        Dokument ważny
-      </div>
+        <p class="title_text">mDowód</p>
+        <img src="znakzapytania.png" class="help_img">
     </div>
 
-    <div class="shortcuts-grid">
-      <a href="#" class="shortcut-item">
-        <div class="shortcut-icon blue">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMjEgMTUgMTMgNyAyMSAxNSIgLz48cGF0aCBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik0zIDkgMTEgMTcgMyA5IiAvPjxwYXRoIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTE4IDIgMTggMjIgMTggMiIgLz48cGF0aCBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik02IDIgNiAyMiA2IDIiIC8+PC9zdmc+" alt="Potwierdź dane">
-        </div>
-        Potwierdź swoje dane
-      </a>
-      <a href="#" class="shortcut-item" onclick="showModal(event, 'details-modal')">
-        <div class="shortcut-icon pink">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTQgMTJoMi00YzAtMS4xLS45LTIgMi0ySDYuNWMtLjg4IDAtMS43NS4xNS0yLjUuNDUtMi4zNS45LTMuMjYgMy4xMS0yLjMyIDUuNDZzMi40MiAzLjg2IDQuNzcgNC43NWMuNzUuMjkgMS42Mi40NCAyLjUuNDRoMi41bS02IDBoNi0zTTQgMTRoMS4yNTIiLz48cGF0aCBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik0xMi42NzcgMi40NTJhMiAyIDAgMCAxIDIuNjQyLS40NWwxLjAxNi43MzJhMyAzIDAgMCAxIDEuMTIyIDIuM3YxLjE4NWExLjE3IDEuMTcgMCAwIDEgLjYgLjIuNTEgLjUxIDAgMCAwIC4yLjEuNS41IDAgMCAxIC40LjQgMy45MiAzLjkyIDAgMCAxIC42IDJtLTMuMDM4IDguODQ3Yy4yMTUtLjQ4NC4wMy0xLjA0LS4zOTgtMS4zNzUtLjgxOS0uNjQyLTEuOTg2LTEuMjM3LTMuMDk0LS4wNjktMS4xMDggMS4xNjgtLTIuNTM4IDEuNTQ0LTMuNzU0Ljc4Ni0uMjY1LS4xNjQtLjM3LS40NTktLjI2OC0uNzIzLjEwMi0uMjY0LjM2MS0uNDU5LjY2Ny0uNTI0IDEuNDg0LS4zMTYgMy4wMTQtLjM5IDQuNDktLjI4OSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgLz48L3N2Zz4=" alt="Dane dowodu">
-        </div>
-        Dane dowodu osobistego
-      </a>
-      <a href="#" class="shortcut-item">
-        <div class="shortcut-icon grey">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTAgMTZhMiAyIDAgMSAwIDQtNHYtM2gtMW0tMi0zaDRtLTQgMGgybS0yIDBhMiAyIDAgMCAxIDAtNHYtM2gtMm00IDBoNHYzaDJtLTQtM2gybTMgMTdhMiAyIDAgMSAwIDQgNHYyYzAgMS0xIDItMiAySDJtMCAwYTIgMiAwIDAgMCAwLTJoMThjMSAwIDItMSAyLTJWMi0yTDYgMTEiLz48L3N2Z3M+" alt="Zastrzeż PESEL">
-        </div>
-        Zastrzeż PESEL
-      </a>
-      <a href="#" class="shortcut-item">
-        <div class="shortcut-icon grey">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTEwLjUgMTJoLTFhMSAxIDAgMCAwIDAtMnIuNS0zLjUtMy41LTQuNU0xMy41IDE0aDFhMSAxIDAgMCAwIDAtMnIuNS0zLjUgMy41LTQuNU0xMi41IDJoLTFhMSAxIDAgMCAwIDAtMnIuNS0zLjUtMy41LTQuNU05LjUgMmgxYTEgMSAwIDAgMCAwLTJzMi41LTMuNSAzLjUtNC41Ii8+PC9zdmc+" alt="Pozostałe skróty">
-        </div>
-        Pozostałe skróty
-      </a>
-    </div>
-
-    <a href="#" class="serial-info-link" onclick="showModal(event, 'details-modal')">
-        Seria i numer mDowodu
-        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJtOSA2IDYgNi02IDYiLz48L3N2Z3M+" alt="go">
-    </a>
-
-    <div class="actor-panel" id="edit-data-panel" style="display:none;">
-        <p style="font-size:14px; color:var(--text-secondary); margin-top:0;">
-            **Panel Edycji Danych (DEMO)**
-        </p>
-        <input type="text" id="edit-name" placeholder="Imię i nazwisko">
-        <input type="text" id="edit-pesel" placeholder="PESEL">
-        <input type="text" id="edit-dob" placeholder="Data urodzenia (np. 09.07.2025)">
-        <button onclick="saveActorData()">Zapisz i ukryj panel</button>
-    </div>
-
-  </main>
-</div>
-
-<div class="modal" id="details-modal" onclick="closeModal(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
-    <header class="sheet-header">
-        <a href="#" class="header-back" onclick="closeModal(event)">
-            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE1IDIwLTgtOCAzLTQtMy00djQgbTgtOCA4IDh2LTMuNzUgbS00LTQgbTEwIDQgMS00djMiLz48L3N2Z3M+" alt="Wróć">
-            Wróć
-        </a>
-        <div class="sheet-header-title">mDowód</div>
-        <img class="header-question" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNOC45NDYgMTMuODE2Yy0uNTcuMjU0LS45NDYuNzkyLS45NDYgMS4zOTR2Mi42MjhIMTRWMjAuNjZtLTIuMzE2LTMuNTQ2YzAtLjM0NC4yMDItLjY0NC40OTMtLjc5NC4yODgtLjE0Mi42MjctLjE1NC45MDMtLjA5LjU1NS4xMjggMS4xMTMtLjE4NiAxLjEzNC0uNzM1LjAyLS41NTctLjM1OC0uOTg4LS44MjgtMS4xNzItLjE1LS4wNTgtLjY3Ny0uMjEtMS4xNzMtLjQzNS0uNDk5LS4yMjUtLjk2LS41NzctMS4yOTMtLjk5Mi0uNTYyLS43MDctLjcxMy0xLjczNC0uMzU0LTIuNTIuNTgyLTEuMzI4IDEuNzAyLTIuMjMgMy4wMjQtMi41NTIuOTktLjI0NCAyLjA2LS4wODQgMi44OTguNDMyYTMuODQgMy44NCAwIDAgMSAxLjM4NiAzLjY1NU0xMi42NjYgNC4zMzRsLjAwOCAwIi8+PC9zdmc+" alt="Pomoc">
-    </header>
-
-    <div class="sheet-content">
-        <div class="sheet-section">
-            <div class="sheet-item-full">
-                <div class="sheet-item-full-label">
-                    Seria i numer mDowodu
-                    <button class="sheet-copy-btn">Kopiuj</button>
+    <div class="confirm">
+        <div class="opacity" onclick="closePage()"></div>
+        <div class="page_1 page" style="display: none;"></div>
+        <div class="page page_2 page_other" style="display: none;"></div> 
+        
+        <div class="page page_3 page_other">
+             <div class="top_grid" style="position: static; padding-top: 10px; padding-bottom: 10px; border-bottom: 0.5px solid var(--line-color);">
+                <div class="action_grid">
+                    <img src="strzalkawroc.png" class="back_img">
+                    <p class="back_text" onclick="closePage()">Wróć</p>
                 </div>
-                <div class="sheet-item-full-value" id="mdowod-serial">MEVM 21949</div>
-                <div class="sheet-item-meta">
-                    Dane mDowodu i dowodu osobistego są inne – to dwa różne dokumenty.
+                <p class="title_text">mDowód</p>
+                <img src="znakzapytania.png" class="help_img">
+            </div>
+
+            <div class="confirm_info">
+                <div class="confirm_box">
+                    <p class="box_top">Seria i numer mDowodu</p>
+                    <p class="box_value box_highlight" id="mdowod-serial">MEVM 21949</p>
+                    <button class="main_button">Kopiuj</button>
+                    <p class="box_top" style="margin-top: 8px; color: #777; font-size: 12px; font-weight: 400;">
+                        Dane mDowodu i dowodu osobistego są inne – to dwa różne dokumenty.
+                    </p>
+                </div>
+                <div class="confirm_box">
+                    <p class="box_top">Termin ważności</p>
+                    <p class="box_value" id="modal-expiry">8.08.2035</p>
+                </div>
+                <div class="confirm_box">
+                    <p class="box_top">Data wydania</p>
+                    <p class="box_value" id="modal-issue">8.08.2025</p>
+                </div>
+                <div class="confirm_box">
+                    <p class="box_top">Imię ojca</p>
+                    <p class="box_value">discord.gg/fobywatel</p>
+                </div>
+                <div class="confirm_box" style="border-bottom: none;">
+                    <p class="box_top">Imię matki</p>
+                    <p class="box_value">discord.gg/fobywatel</p>
                 </div>
             </div>
             
-            <div class="sheet-data-row">
-                <div class="mdowod-data-label">Termin ważności</div>
-                <div class="mdowod-data-value" id="modal-expiry">8.08.2035</div>
-            </div>
-            <div class="sheet-data-row">
-                <div class="mdowod-data-label">Data wydania</div>
-                <div class="mdowod-data-value" id="modal-issue">8.08.2025</div>
-            </div>
-            <div class="sheet-data-row">
-                <div class="mdowod-data-label">Imię ojca</div>
-                <div class="mdowod-data-value">discord.gg/fobywatel</div>
-            </div>
-            <div class="sheet-data-row">
-                <div class="mdowod-data-label">Imię matki</div>
-                <div class="mdowod-data-value">discord.gg/fobywatel</div>
-            </div>
-        </div>
-
-        <div class="sheet-section">
-            <div class="sheet-collapsible-title" onclick="toggleCollapsible(this)">
-                Twoje dodatkowe dane
-                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJtOSA2IDYgNi02IDYiLz48L3N2Z3M+" alt="Rozwiń">
-            </div>
-            <div class="sheet-collapsible-content">
-                <div class="sheet-data-row">
-                    <div class="mdowod-data-label">Miejsce urodzenia</div>
-                    <div class="mdowod-data-value">Planet Earth</div>
+            <div class="bottom_holder info_holder" style="border-radius: 0; margin-bottom: 0;" onclick="toggleAdditionalData(event)">
+                <div class="bottom_grid">
+                    <p class="bottom_text" style="color: var(--text-primary); margin-left: 0px; font-weight: 600;">Twoje dodatkowe dane</p>
                 </div>
-                <div class="mdowod-data-row">
-                    <div class="mdowod-data-label">Imię drugie</div>
-                    <div class="mdowod-data-value">DEMO</div>
+                <img class="action_arrow" src="strzalka.svg">
+            </div>
+
+            <div class="additional_holder">
+                 <div class="additional_grid" style="padding-left: 16px; padding-right: 16px;">
+                    <p class="additional_title">Nazwisko rodowe</p>
+                    <p class="additional_subtitle" id="familyName"></p>
+                </div>
+                <div class="additional_grid" style="padding-left: 16px; padding-right: 16px;">
+                    <p class="additional_title">Płeć</p>
+                    <p class="additional_subtitle" id="sex"></p>
+                </div>
+                <div class="additional_grid" style="border-bottom: none; padding-left: 16px; padding-right: 16px;">
+                    <p class="additional_title">Miejsce urodzenia</p>
+                    <p class="additional_subtitle" id="birthPlace"></p>
                 </div>
             </div>
-        </div>
 
-        <div class="sheet-section">
-            <div class="sheet-update-info">
-                Ostatnia aktualizacja
-                <span style="font-weight:500; color:var(--text-primary);">24.12.2024</span>
-                <button>Aktualizuj</button>
+            <div class="bottom_holder" style="height: 90px; margin-bottom: 0; background: var(--card-bg); border-radius: 0;">
+                <div class="bottom_update">
+                    <div class="bottom_update_grid">
+                        <p class="bottom_update_text" style="margin-left: 0px;">Ostatnia aktualizacja</p>
+                        <p class="bottom_update_value" style="margin-left: 0px;">24.12.2024</p>
+                    </div>
+                    <button class="main_button update">Aktualizuj</button>
+                </div>
             </div>
         </div>
     </div>
-  </div>
-</div>
+    
+    <p class="time_text" id="time"></p>
 
-<nav class="bottom-nav">
-  <a href="#" class="nav-item active">
-    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE2LjM1IDcuMzctMi40Mi0yLjQxTDEyLjM1IDYuNTFsMS40MiAxLjQyeiIvPjxwYXRoIHN0cm9rZT0iIzBhODQyRiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTEwIDE1LjkxIDUuNTktNS41OWExLjkgMS45IDAgMCAwIDAtMi42NyAxLjg3IDEuODcgMCAwIDAtMi42NiAwbC01LjU2IDUuNTVhMi4wMiAyLjAyIDAgMCAwIDAgMi44NmwxLjggMS44YzEuMTggMS4wMiAzIDEuMDIgNC4wNi4wMm0tOS01YTMgMyAwIDAgMS0uMzktMi4yOCAxLjYgMS42IDAgMCAxIC43NC0uNjEuNjkuNjkgMCAwIDEgLjcuMi43LjcgMCAwIDEgLjYgLjUgMS44IDEuOCAwIDAgMCAuMS44YTMgMyAwIDAgMS01IDEuNSIvPjwvc3ZnPg==" alt="Dokumenty"></div>
-    Dokumenty
-  </a>
-  <a href="#" class="nav-item">
-    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTMgNWg2YTIgMiAwIDAgMSAyIDJ2NGEyIDIgMCAwIDEtMiAybS01LTkgNC00djggTSQgMTJhMiAyIDAgMCAxIDIgMiA0IDQgMCAwIDAgMiA0IDIgMiAwIDAgMCA0IDIgOCA4IDAgMCAwLTEwLTgiLz48L3N2Z3M+" alt="Usługi"></div>
-    Usługi
-  </a>
-  <a href="#" class="nav-item">
-    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTAgMTcgMTQgMTdNMTAgMjEgMTQgMjFNMyAxNGg3bTcgMGg0bTMtN2g0bS00IDdoMTRhMiAyIDAgMCAwIDIgMm0tMTgtOGE0IDQgMCAwIDEtOCA0djE2YTIgMiAwIDAgMCAyIDJzNiAwIDcgMG03LTQgMi4xNy0uMTNBNiA2IDAgMCAwIDE1LjY2IDIuNDMiLz48L3N2Z3M+" alt="Kod QR"></div>
-    Kod QR
-  </a>
-  <a href="#" class="nav-item">
-    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTUgMTJIMi0yTTEwIDEwaDRNNyAxMmE1IDUgMCAwIDAgMTAgMHY1IDVzLTEuNSA0LTYgNC02LTRsLTItMlY5Ii8+PC9zdmc+" alt="Więcej"></div>
-    Więcej
-  </a>
-</nav>
+    <div class="id_image_data">
+        <img draggable="false" class="id_image" src="tlo.png"> <div class="inset">
+            <div style="position: relative; width: 45%; max-width: 140px;">
+                <a href="#" onclick="showEditPanel(event)" style="display:block;">
+                    <div class="id_own_image" style="background-image: url('https://i.imgur.com/7vHo48p.jpg');"></div>
+                </a>
+                
+                <div class="flag_video"></div>
+                <img draggable="false" src="godlo.gif" class="eagle_video">
+            </div>
 
-<script>
-// Funkcja dynamicznego czasu
-function updateTime() {
-    const now = new Date();
-    // Formatowanie czasu (np. 21:18)
-    const timeString = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-    // Formatowanie daty (np. 08.08.2025 - zmienione na aktualną datę z fikcyjnym 2025 r. dla spójności)
-    const dateString = now.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\./g, '.');
+            <div class="id_data_grid">
+                <div class="data_holder">
+                    <p class="data_title">Imię (imiona)</p>
+                    <p class="data_value firstname" id="name"></p>
+                </div>
+                <div class="data_holder">
+                    <p class="data_title">Nazwisko</p>
+                    <p class="data_value surname" id="surname"></p>
+                </div>
+                <div class="data_holder">
+                    <p class="data_title">Obywatelstwo</p>
+                    <p class="data_value" id="nationality"></p>
+                </div>
+                <div class="data_holder">
+                    <p class="data_title">Data urodzenia</p>
+                    <p class="data_value" id="birthday"></p>
+                </div>
+                <div class="data_holder" style="margin-bottom: 0;">
+                    <p class="data_title">Numer PESEL</p>
+                    <p class="data_value" id="pesel"></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    document.getElementById('dynamic-time').innerHTML = `<strong>${timeString}</strong> ${dateString}`;
-}
-// Uruchomienie dynamicznego czasu
-setInterval(updateTime, 1000);
-updateTime(); // Wywołanie od razu, by nie było opóźnienia
+    <div class="edit_panel" id="edit-data-panel" style="display:none; padding: 16px; background: #2e2e2e; margin: 0 16px 20px; border-radius: 12px;">
+        <p style="font-size:14px; color:var(--text-secondary); margin-top:0;">
+            **Panel Edycji Danych (DEMO)**
+        </p>
+        <input type="text" id="edit-name-input" placeholder="Imię (imiona)" style="width:100%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid #4a4a4a; background:#121212; color:var(--text-primary); font-size:16px;">
+        <input type="text" id="edit-surname-input" placeholder="Nazwisko" style="width:100%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid #4a4a4a; background:#121212; color:var(--text-primary); font-size:16px;">
+        <input type="text" id="edit-pesel-input" placeholder="PESEL" style="width:100%; padding:10px; margin:5px 0; border-radius:8px; border:1px solid #4a4a4a; background:#121212; color:var(--text-primary); font-size:16px;">
+        <button onclick="saveActorData()" style="background:var(--accent-blue); color:#fff; padding:10px 16px; border:none; border-radius:8px; cursor:pointer; font-weight:600; margin-top:10px; width:100%; font-size:16px;">Zapisz i ukryj</button>
+    </div>
 
-// Funkcje Modal/Sheet
-function showModal(event, id) {
-  event.preventDefault();
-  const modal = document.getElementById(id);
-  if (modal) {
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-}
+    <div class="id_bottom">
+        <div class="bottom_grid">
+            <img class="bottom_image" src="ptaszek.svg">
+            <p class="bottom_text">Dokument ważny</p>
+        </div>
+    </div>
 
-function closeModal(event) {
-  const modal = document.getElementById('details-modal');
-  if (event.target.classList.contains('modal') || event.currentTarget.classList.contains('header-back')) {
-    modal.classList.remove('show');
-    document.body.style.overflow = '';
-  }
-}
+    <div class="other_grid">
+        <div class="bottom_holder" onclick="sendTo('qr')" style="margin-bottom: 8px;">
+            <div class="bottom_grid">
+                <div class="bottom_element_image" style="width: 35px; height: 35px; background: #004b92; border-radius: 10px;">
+                    <img src="ptaszekqr.png" style="width: 20px; height: 20px; margin: auto;">
+                </div>
+                <p class="bottom_text">Potwierdź swoje dane</p>
+            </div>
+            <img class="action_arrow" src="strzalka.svg">
+        </div>
+        
+        <div class="bottom_holder" onclick="openPage(3)" style="margin-bottom: 8px;">
+            <div class="bottom_grid">
+                <div class="bottom_element_image" style="width: 35px; height: 35px; background: #723c72; border-radius: 10px;">
+                    <img src="dane.png" style="width: 20px; height: 20px; margin: auto;">
+                </div>
+                <p class="bottom_text">Dane dowodu osobistego</p>
+            </div>
+            <img class="action_arrow" src="strzalka.svg">
+        </div>
 
-// Funkcja rozwijania "Dodatkowe dane"
-function toggleCollapsible(element) {
-    const content = element.nextElementSibling;
-    const arrow = element.querySelector('img');
+        <div class="bottom_holder" onclick="sendTo('zastrzez')" style="margin-bottom: 8px;">
+            <div class="bottom_grid">
+                <div class="bottom_element_image" style="width: 35px; height: 35px; background: #3c3c3c; border-radius: 10px;">
+                    <img src="zastrzez_pesel.png" style="width: 20px; height: 20px; margin: auto;">
+                </div>
+                <p class="bottom_text">Zastrzeż PESEL</p>
+            </div>
+            <img class="action_arrow" src="strzalka.svg">
+        </div>
+        
+        <div class="bottom_holder" onclick="sendTo('wiecej')">
+            <div class="bottom_grid">
+                <div class="bottom_element_image" style="width: 35px; height: 35px; background: #3c3c3c; border-radius: 10px;">
+                    <img src="wiecej_skrotow.png" style="width: 20px; height: 20px; margin: auto;">
+                </div>
+                <p class="bottom_text">Pozostałe skróty</p>
+            </div>
+            <img class="action_arrow" src="strzalka.svg">
+        </div>
 
-    if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-        element.classList.remove('expanded');
-    } else {
-        content.style.maxHeight = content.scrollHeight + "px";
-        element.classList.add('expanded');
+        <div class="bottom_holder" onclick="openPage(3)" style="margin-top: 10px;">
+             <div class="bottom_grid">
+                <p class="bottom_text" style="margin-left: 0px;">Seria i numer mDowodu</p>
+            </div>
+            <img class="action_arrow" src="strzalka.svg">
+        </div>
+
+        <div class="bottom_holder" style="height: 90px; margin-bottom: 120px; background: var(--bg-dark); border-radius: var(--radius);">
+            <div class="bottom_update">
+                <div class="bottom_update_grid">
+                    <p class="bottom_update_text" style="margin-left: 0px;">Ostatnia aktualizacja</p>
+                    <p class="bottom_update_value" style="margin-left: 0px;">24.12.2024</p>
+                </div>
+                <button class="main_button update">Aktualizuj</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom_bar">
+        <div class="bottom_bar_grid">
+            <div class="bottom_element_grid" send="home">
+                <div class="bottom_element_image home"></div>
+                <p class="bottom_element_text">Pulpit</p>
+            </div>
+            <div class="bottom_element_grid" send="documents">
+                <div class="bottom_element_image documents_open"></div>
+                <p class="bottom_element_text open">Dokumenty</p>
+            </div>
+            <div class="bottom_element_grid" send="services">
+                <div class="bottom_element_image services"></div>
+                <p class="bottom_element_text">Usługi</p>
+            </div>
+            <div class="bottom_element_grid" send="qr">
+                <div class="bottom_element_image qr"></div>
+                <p class="bottom_element_text">Kod QR</p>
+            </div>
+            <div class="bottom_element_grid" send="more">
+                <div class="bottom_element_image more"></div>
+                <p class="bottom_element_text">Więcej</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // --- FUNKCJE DLA PANELU EDYCJI ---
+    
+    function showEditPanel(event) {
+        event.preventDefault(); // Zapobiega przejściu do innej strony
+        const panel = document.getElementById('edit-data-panel');
+        
+        // Wypełnianie pól aktualnymi danymi przed otwarciem
+        document.getElementById('edit-name-input').value = document.getElementById('name').textContent;
+        document.getElementById('edit-surname-input').value = document.getElementById('surname').textContent;
+        document.getElementById('edit-pesel-input').value = document.getElementById('pesel').textContent;
+
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        
+        // Zwinąć sekcję 'Dodatkowe dane', jeśli jest otwarta
+        document.querySelector('.info_holder').classList.remove('open');
     }
-}
 
-// Funkcja do pokazywania/ukrywania panelu edycji po kliknięciu zdjęcia
-function showActorPanel(event) {
-    event.preventDefault(); // Zapobiega ewentualnemu otwarciu linku
-    const panel = document.getElementById('edit-data-panel');
-    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-}
+    function saveActorData(){
+      const nameInput = document.getElementById('edit-name-input');
+      const surnameInput = document.getElementById('edit-surname-input');
+      const peselInput = document.getElementById('edit-pesel-input');
 
-// Funkcja zapisująca dane aktora (z Twojego oryginalnego kodu, zaktualizowana)
-function saveActorData(){
-  const nameInput = document.getElementById('edit-name');
-  const peselInput = document.getElementById('edit-pesel');
-  const dobInput = document.getElementById('edit-dob');
+      // Aktualizacja głównej karty
+      if(nameInput.value) document.getElementById('name').textContent = nameInput.value;
+      if(surnameInput.value) document.getElementById('surname').textContent = surnameInput.value;
+      if(peselInput.value) document.getElementById('pesel').textContent = peselInput.value;
+      
+      // Aktualizacja pól w modalu, jeśli mają inne ID (tutaj używamy tych samych)
+      // Tutaj zakładamy, że tylko główne pola się zmieniają
+      
+      // Ukrycie panelu po zapisie
+      document.getElementById('edit-data-panel').style.display = 'none';
 
-  const nameParts = nameInput.value.trim().split(' ');
-  const firstName = nameParts.length > 0 ? nameParts[0] : '';
-  const surname = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-  
-  // Aktualizacja głównej karty
-  if(firstName) document.getElementById('actor-name-short').textContent = firstName + ' (imiona)';
-  if(surname) document.getElementById('actor-surname').textContent = surname;
-  if(peselInput.value) document.getElementById('actor-pesel').textContent = peselInput.value;
-  if(dobInput.value) document.getElementById('actor-dob').textContent = dobInput.value;
-
-  // Ukrycie panelu po zapisie
-  document.getElementById('edit-data-panel').style.display = 'none';
-
-  // Opcjonalnie: alert o zmianie
-  alert('Dane zaktualizowane w widoku (tylko demo)!');
-}
-</script>
+      alert('Dane zaktualizowane! (Kliknij zdjęcie/orła, aby otworzyć panel edycji)');
+    }
+    
+    // Uruchomienie skryptów po załadowaniu strony
+    document.addEventListener('DOMContentLoaded', () => {
+        initializeData();
+        setInterval(updateTime, 1000);
+        updateTime();
+        
+        // Zwijanie / rozwijanie dodatkowych danych (jest już w funkcji toggleAdditionalData)
+    });
+    
+    // Puste funkcje sendTo i closePage, które istniały w Twoim kodzie v2
+    function sendTo(page) {
+        console.log("Przechodzę do: " + page);
+    }
+    </script>
 </body>
 </html>
