@@ -9,97 +9,228 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="../manifest.json">
 
-<script defer src="../jebanegowno2/assets/bar.js"></script>
-<script defer src="../jebanegowno2/assets/manifest.js"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
+/* Zaktualizowane zmienne - bliższe kolorystyce mObywatela 2.0 */
 :root {
   --bg: #F5F6FB;
   --card: #fff;
   --muted: #7b7c81;
-  --accent: #064792;
+  --accent: #0260E8; /* Główny kolor mObywatel */
+  --blue-dark: #064792;
+  --blue-light: #E7F0FF;
   --radius: 14px;
   --shadow: 0 8px 24px rgba(17,24,39,0.06);
   --safe-area: env(safe-area-inset-bottom, 12px);
 }
 
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:Inter, Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;color:#121212}
+html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:'Inter', Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;color:#121212}
 img{display:block;max-width:100%;height:auto;pointer-events:none}
+a{text-decoration:none;color:inherit}
 
 /* App shell */
-.app{min-height:100vh;display:flex;flex-direction:column;padding-bottom:calc(96px + var(--safe-area));}
+.app{min-height:100vh;display:flex;flex-direction:column;padding-bottom:calc(12px + var(--safe-area));}
 main.container{padding:20px 16px 28px;flex:1}
 
+/* Top Bar (nowy element dla V4) */
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:0 16px 16px;font-size:16px;font-weight:600}
+.top-bar-title{color:#121212}
+.top-bar-icon{width:24px;height:24px;border-radius:50%;background:#e0e0e0} /* Symulacja ikony profilu */
+
 /* Cards */
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:16px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:16px;position:relative}
 
-/* ID / mDowód */
-.id-card{display:flex;gap:12px;align-items:center;margin-bottom:16px}
-.id-avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#dfefff,#e6f7ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
-.id-meta{flex:1}
-.id-meta h3{margin:0;font-size:1rem}
-.id-meta p{margin:6px 0 0;color:var(--muted);font-size:13px}
+/* mDowód Card Style (bardziej realistyczny wygląd dokumentu) */
+.mdowod-card{
+  background:linear-gradient(135deg, var(--accent), #1a71ff);
+  color:#fff;
+  padding:20px;
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(2,96,232,0.3);
+  margin-bottom:20px;
+}
+.mdowod-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.mdowod-title{font-size:18px;font-weight:700}
+.mdowod-meta{font-size:12px;opacity:0.8}
 
-/* Actor edit panel */
-.actor-panel{margin-top:12px;background:#f0f3ff;padding:12px;border-radius:12px}
-.actor-panel input{width:100%;padding:6px 8px;margin:6px 0;border-radius:8px;border:1px solid #d6d6d6}
-.actor-panel button{background:var(--accent);color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-top:6px}
+.mdowod-photo{
+  width:80px;
+  height:100px;
+  background:#fff;
+  border-radius:8px;
+  border:2px solid rgba(255,255,255,0.4);
+  margin-right:16px;
+  float:left;
+  overflow:hidden;
+}
+.mdowod-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6; /* Symulacja zdjęcia */
+}
 
-/* Modal / mDowód */
-.modal{position:fixed;inset:0;background:rgba(10,12,16,0.4);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:120}
+.mdowod-details h3{margin:0 0 4px;font-size:20px;font-weight:700;line-height:1.2}
+.mdowod-details p{margin:0 0 2px;font-size:13px;opacity:0.9}
+.mdowod-details{overflow:hidden} /* Clear float */
+.mdowod-details strong{font-weight:600;margin-right:4px}
+
+/* Sekcja Status / QR Code */
+.mdowod-status{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:20px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,0.2);
+}
+.mdowod-status-text{font-size:13px;font-weight:500;display:flex;align-items:center}
+.mdowod-status-text::before{content:'';width:8px;height:8px;background:#44C000;border-radius:50%;margin-right:6px;display:block}
+.mdowod-qr{width:36px;height:36px;background:#fff;border-radius:4px} /* Symulacja kodu QR */
+
+/* Actor edit panel (zmieniony na sekcję 'Usługi') */
+.services-section{margin-top:12px;}
+.service-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
+.service-item:last-child{border-bottom:none}
+.service-icon{width:36px;height:36px;border-radius:8px;background:var(--blue-light);margin-right:12px;display:flex;align-items:center;justify-content:center}
+.service-icon img{width:20px;height:20px}
+.service-text{flex:1;font-weight:500}
+.service-arrow{width:20px;height:20px;opacity:0.4}
+
+/* Bottom Sheet (dla symulacji akcji - jak w oryginalnym kodzie) */
+.modal{position:fixed;inset:0;background:rgba(10,12,16,0.4);display:none;align-items:flex-end;justify-content:center;padding:0;z-index:120}
 .modal.show{display:flex}
-.sheet{width:100%;max-width:720px;border-radius:16px;background:var(--card);padding:18px 16px 24px;box-shadow:0 24px 60px rgba(10,14,22,0.2)}
+.sheet{width:100%;max-width:720px;border-radius:16px 16px 0 0;background:var(--card);padding:18px 16px calc(24px + var(--safe-area));box-shadow:0 24px 60px rgba(10,14,22,0.2);transform:translateY(100%);transition:transform 0.3s ease-out}
+.modal.show .sheet{transform:translateY(0)}
 .sheet .handle{width:40px;height:4px;background:#e6e7ee;border-radius:999px;margin:0 auto 10px}
+.sheet h4{margin:0 0 16px;font-size:18px;font-weight:600}
+
+/* Symulacja Actor Panel w bottom sheet */
+.actor-panel-sheet input{width:100%;padding:10px 12px;margin:8px 0;border-radius:10px;border:1px solid #d6d6d6;font-size:16px}
+.actor-panel-sheet button{background:var(--accent);color:#fff;padding:12px 16px;border:none;border-radius:10px;cursor:pointer;font-weight:600;margin-top:12px;width:100%;font-size:16px}
 
 /* Responsive */
-@media (max-width:600px){
-  .id-avatar{width:56px;height:56px;font-size:18px}
+@media (min-width:720px){
+  main.container{max-width:720px;margin:0 auto}
 }
 </style>
 </head>
 
 <body>
 <div class="app">
-<main class="container">
-<section class="card">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <div style="font-weight:700">mDowód</div>
-    <div style="font-size:12px;color:var(--muted)">Wersja: 4.0 (demo)</div>
-  </div>
 
-  <div class="id-card">
-    <div class="id-avatar">PL</div>
-    <div class="id-meta">
-      <h3 id="actor-name">Jan Kowalski</h3>
-      <p id="actor-pesel">PESEL: 85010112345 · Dowód wydany: 2020-10-01</p>
+  <header class="top-bar">
+    <div class="top-bar-title">Twoje dokumenty</div>
+    <div class="top-bar-icon"></div> </header>
+
+  <main class="container">
+    <a href="#" onclick="showModal(event, 'mdowod-details-sheet')">
+      <div class="mdowod-card">
+        <div class="mdowod-header">
+          <div class="mdowod-title">mDowód</div>
+          <div class="mdowod-meta">PL · Wersja: 4.0</div>
+        </div>
+
+        <div class="mdowod-photo">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MiA5MiI+PHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjkyIiBmaWxsPSIjRjBGMEYwIi8+PHBhdGggZD0iTTM2IDExYTEyIDEyIDAgMCAwLTMgMjMuMzUgNi43MiA2LjcyIDAgMCAwLTIgMy42NSA4IDggMCAwIDAgLTcgNS4yNkwxOSAzNmwxMyAxMmwxLTNjNC42LTUuMiA1LTExLjUgNC0xNi41LS43LTMtMi40LTMtNC0zLjUtMy0xLTIgMS41LTIgNC0uNSA0LjUtMS43IDguNi0yLjUgMTMgMCAuMSAwIC4yLS4yLjQgLS4xIDAtLjEgMCAwIDAtLjQgMC0uNSAwLS41IDAgLTEuMS0uNy0xLjUtMS4zLS44LS45LTQuMi02LjktNC4yLTE3LjJ6TTE2IDU3Yy43LTQgMi40LTguMyA0LTExLjMgMS4yIDIuMiAzIDQuNCA2IDUuNCA0LTIuNiA0LTUuNCA0LTkgMS01IDMtNiAzLTkgMy0yLTMtNi0zLTlsLTIuMy0uNWMuNC0zLjUgMS4xLTcgMi0xMC41IDEtNCA1LTEgNy0xczYgMyA2IDctMiAyLjUgMSAxLjVjLS42LjYtMS4xIDEuMi0xLjcgMi41bC0uNiAxLjVjLS41IDEtMSAxLjYtMS42IDItLjkgLjYtMi4xIDEuMi0zLjIgMS44LTMgMS41LTcgMy0xMSA0LTVgIiBmaWxsPSIjNzA3MDcwIi8+PC9zdmc+" alt="Zdjęcie" />
+        </div>
+        <div class="mdowod-details">
+          <h3 id="actor-name">Jan Kowalski</h3>
+          <p><strong>Nazwisko rodowe:</strong> Kowalska</p>
+          <p id="actor-pesel"><strong>PESEL:</strong> 85010112345</p>
+          <p><strong>Ważność:</strong> bezterminowo</p>
+        </div>
+        
+        <div class="mdowod-status">
+          <div class="mdowod-status-text">Aktywny</div>
+          <div class="mdowod-qr"></div> </div>
+      </div>
+    </a>
+
+    <section class="card services-section">
+      <div style="font-weight:700;margin-bottom:8px">Usługi</div>
+      
+      <div class="service-item">
+        <div class="service-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggZmlsbD0iIzAyNjBFOCIgZD0iTTEyIDJjNS41MjMgMCAxMCA0LjQ3NyAxMCAxMHMtNC40NzcgMTAtMTAgMTBTMiAxNy41MjMgMiAxMiA2LjQ3NyAyIDEyIDJtLjM1IDYuNjVjLS4wNyAwLS4xNSAwLS4yLjA1bC0yLjYgMS41YS41LjUgMCAwIDAtLjA1LjlsMi42IDEuNWwuMi4wNWMuMDcuMDQuMTUuMDQuMiAwIC4wNyAwIC4xNC0uMDMuMi0uMDdsMi42LTEuNS4wNC0uMjdhLjUuNSAwIDAgMC0uMTEtLjJjLS4wMy0uMDQtLjA5LS4wNi0uMTYtLjA2bC0yLjYtMS41YTEuMTUgMS4xNSAwIDAgMC0uMi0uMDVNMTEuNSA3YTEuNSAxLjUgMCAxIDEtMyAwIDEuNSAxLjUgMCAwIDEgMyAwek0xMy40IDE5LjM1Yy0uMTcuMDUtLjM1LjA3LS41NS4wN2gtLjA1Yy0uMiAwLS40Mi0uMDItLjYtLjA2LS42Mi0uMTgtMS4wNS0uNTYtMS4yNS0xLjFhMS42MSAxLjYxIDAgMCAxLS4xOC0uNmMtLjA1LS4zLS4wNC0uNDYuMDItLjVzLjE4LS40LjQyLS41MWMuMjUtLjExLjU1LS4xNi45LS4xNi40IDAgLjcxLjA1IDEgLjE1LjI4LjEgLjUgLjI4LjYuNGEuOTQuOTQgMCAwIDEtLjUgMS4zYzEuNi4zIDEuNiAxIDEuNiAxLjZsLS41LjVhMi4zIDIzIDAgMCAxLS42LjcuMzkzLjM5MyAwIDAgMS0uNCAuMTQiLjk4LjkuNCAwIDAtLjktMS4xWm0yLjYgMS40LS41LS41YTIuNiAyLjYgMCAwIDEtLjcuNmwtLjQuMTUuMS42YS41OS41OSAwIDAgMCAuMS40Yy4wNy4xLjE2LjEuMjIuMS4xLjA1LjItLjA1LjMtLjEuMDgtLjEuMTMtLjMgLjE0LS41VjIwLjFsLjE0LS41YTIgMiAwIDAgMCAuNC0uNmMuMi0uMi4zLS41LjMtLjh2LTEuM2wuNS0uN2EuOTkuOTkgMCAwIDEtLjEgMS4yYy0uMjguMjItLjUgLjQ0LS41LjZzLjE0LjMuNDguNGE0LjUgNC41IDAgMCAwLjctLjguNS41IDAgMCAwLS41LS41WiIvPjwvc3ZnPg==" alt="icon"></div>
+        <div class="service-text">Zastrzeż PESEL</div>
+        <img class="service-arrow" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSRtOSA2IDYgNi02IDYiLz48L3N2Zz4=" alt="go">
+      </div>
+      
+      <div class="service-item">
+        <div class="service-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMDI2MEU4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTMgNWg2YTIgMiAwIDAgMSAyIDJ2NGEyIDIgMCAwIDEtMiAybS01LTkgNC00djggTSQgMTJhMiAyIDAgMCAxIDIgMiA0IDQgMCAwIDAgMiA0IDIgMiAwIDAgMCA0IDIgOCA4IDAgMCAwLTEwLTgiLz48L3N2Zz4=" alt="icon"></div>
+        <div class="service-text">Potwierdź dane</div>
+        <img class="service-arrow" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSNtOSA2IDYgNi02IDYiLz48L3N2Zz4=" alt="go">
+      </div>
+    </section>
+
+    <div style="text-align:center;margin-top:20px;color:var(--muted);font-size:13px">
+      Aplikacja mObywatel <span style="font-weight:600">v4.0.5</span>
     </div>
-    <div style="text-align:right">
-      <img src="../images/ic_arrow_forward_Dgray.svg" alt="go" width="22">
+  </main>
+</div>
+
+<div class="modal" id="mdowod-details-sheet" onclick="closeModal(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="handle"></div>
+    <h4>Szczegóły mDowodu (Demo)</h4>
+
+    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">
+      Tutaj w pełnej aplikacji pojawiłaby się lista wszystkich szczegółowych danych (imiona, nazwisko, data urodzenia, itp.) oraz sekcja umożliwiająca "Udostępnij dane" lub "Okazać do weryfikacji".
+    </p>
+
+    <div class="actor-panel-sheet">
+      <input type="text" id="edit-name" placeholder="Imię i nazwisko (np. Anna Kowalska)">
+      <input type="text" id="edit-pesel" placeholder="PESEL (np. 95050598765)">
+      <button onclick="saveActorData()">Zaktualizuj dane na karcie (Tylko demo)</button>
     </div>
   </div>
-
-  <div class="actor-panel">
-    <input type="text" id="edit-name" placeholder="Imię i nazwisko">
-    <input type="text" id="edit-pesel" placeholder="PESEL">
-    <button onclick="saveActorData()">Zapisz zmiany</button>
-  </div>
-
-  <div style="margin-top:12px;color:var(--muted);font-size:13px">
-    mDowód
-  </div>
-</section>
-</main>
 </div>
 
 <script>
+// Funkcja do pokazywania modala
+function showModal(event, id) {
+  event.preventDefault(); // Zapobiega domyślnej akcji (przejściu do linku)
+  const modal = document.getElementById(id);
+  if (modal) {
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden'; // Zapobiega przewijaniu tła
+  }
+}
+
+// Funkcja do zamykania modala
+function closeModal(event) {
+  if (event.target.classList.contains('modal')) {
+    event.target.classList.remove('show');
+    document.body.style.overflow = ''; // Przywraca przewijanie tła
+  }
+}
+
+// Funkcja zapisująca dane aktora
 function saveActorData(){
-  const name = document.getElementById('edit-name').value;
-  const pesel = document.getElementById('edit-pesel').value;
-  if(name) document.getElementById('actor-name').textContent = name;
-  if(pesel) document.getElementById('actor-pesel').textContent = 'PESEL: '+pesel+' · Dowód wydany: 2020-10-01';
+  const nameInput = document.getElementById('edit-name');
+  const peselInput = document.getElementById('edit-pesel');
+  const actorNameElement = document.getElementById('actor-name');
+  const actorPeselElement = document.getElementById('actor-pesel');
+
+  if(nameInput.value) {
+    actorNameElement.textContent = nameInput.value;
+  }
+  if(peselInput.value) {
+    actorPeselElement.innerHTML = `<strong>PESEL:</strong> ${peselInput.value}`;
+  }
+
+  // Opcjonalnie: Zamknij modal po zapisie (dla lepszego UX demo)
+  const modal = document.getElementById('mdowod-details-sheet');
+  if (modal) {
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  // Wyczyść pola
+  nameInput.value = '';
+  peselInput.value = '';
 }
 </script>
 </body>
