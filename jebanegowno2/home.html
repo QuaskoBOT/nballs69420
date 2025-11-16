@@ -215,7 +215,7 @@ main.container{padding:20px 16px 28px;flex:1}
       <button onclick="saveActorData()">Zapisz zmiany</button>
     </div>
     <div style="margin-top:12px;color:var(--muted);font-size:13px">
-      Ten ekran to demo - nie używaj materiału jako prawdziwego dokumentu.
+      sigiemka
     </div>
   </div>
 </div>
@@ -230,7 +230,7 @@ function sendTo(page){
     case 'qr': location.href = './qr.html'; break;
     case 'more': location.href = './more.html'; break;
     case 'card': location.href = './card.html'; break;
-    case 'mDowod': openModal(); break;
+    case 'mDowod': location.href = './card.html'; break;
     case 'add': alert('Funkcja dodawania dokumentu — demo'); break;
     default: console.log('navigate to:', page);
   }
@@ -253,3 +253,4 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape') closeModal(
 
 </body>
 </html>
+
