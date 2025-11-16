@@ -4,233 +4,694 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>mDowód – mObywatel 2.0</title>
-<link rel="shortcut icon" href="../images/coi_common_ui_ic_mobywatel_logo.svg" type="image/x-icon">
-<meta name="theme-color" content="#F5F6FB">
+<link rel="shortcut icon" href="https://raw.githubusercontent.com/mobywatel-github/mobywatel-pwa/main/public/images/coi_common_ui_ic_mobywatel_logo.svg" type="image/x-icon">
+<meta name="theme-color" content="#121212">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="manifest" href="../manifest.json">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-/* Zaktualizowane zmienne - bliższe kolorystyce mObywatela 2.0 */
+/* Zaktualizowane zmienne - ciemny motyw */
 :root {
-  --bg: #F5F6FB;
-  --card: #fff;
-  --muted: #7b7c81;
-  --accent: #0260E8; /* Główny kolor mObywatel */
-  --blue-dark: #064792;
-  --blue-light: #E7F0FF;
-  --radius: 14px;
-  --shadow: 0 8px 24px rgba(17,24,39,0.06);
-  --safe-area: env(safe-area-inset-bottom, 12px);
+  --bg: #000000; /* Głęboka czerń */
+  --card: #1D1D1D; /* Ciemniejszy szary dla kart/elementów */
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+  --accent: #0A84FF; /* Kolor akcentu (iOS Blue) */
+  --red: #FF3B30; 
+  --green: #34C759;
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0,0,0,0.4);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-top: env(safe-area-inset-top, 0px);
 }
 
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:'Inter', Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;color:#121212}
+html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:'Inter', Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;color:var(--text-primary);-webkit-font-smoothing:antialiased;}
 img{display:block;max-width:100%;height:auto;pointer-events:none}
 a{text-decoration:none;color:inherit}
 
 /* App shell */
-.app{min-height:100vh;display:flex;flex-direction:column;padding-bottom:calc(12px + var(--safe-area));}
-main.container{padding:20px 16px 28px;flex:1}
+.app{min-height:100vh;display:flex;flex-direction:column;padding-bottom:calc(90px + var(--safe-area-bottom));}
+main.container{flex:1;padding:0 16px;}
 
-/* Top Bar (nowy element dla V4) */
-.top-bar{display:flex;justify-content:space-between;align-items:center;padding:0 16px 16px;font-size:16px;font-weight:600}
-.top-bar-title{color:#121212}
-.top-bar-icon{width:24px;height:24px;border-radius:50%;background:#e0e0e0} /* Symulacja ikony profilu */
-
-/* Cards */
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:16px;position:relative}
-
-/* mDowód Card Style (bardziej realistyczny wygląd dokumentu) */
-.mdowod-card{
-  background:linear-gradient(135deg, var(--accent), #1a71ff);
-  color:#fff;
-  padding:20px;
-  border-radius:18px;
-  box-shadow:0 10px 30px rgba(2,96,232,0.3);
-  margin-bottom:20px;
-}
-.mdowod-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.mdowod-title{font-size:18px;font-weight:700}
-.mdowod-meta{font-size:12px;opacity:0.8}
-
-.mdowod-photo{
-  width:80px;
-  height:100px;
-  background:#fff;
-  border-radius:8px;
-  border:2px solid rgba(255,255,255,0.4);
-  margin-right:16px;
-  float:left;
-  overflow:hidden;
-}
-.mdowod-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0.6; /* Symulacja zdjęcia */
-}
-
-.mdowod-details h3{margin:0 0 4px;font-size:20px;font-weight:700;line-height:1.2}
-.mdowod-details p{margin:0 0 2px;font-size:13px;opacity:0.9}
-.mdowod-details{overflow:hidden} /* Clear float */
-.mdowod-details strong{font-weight:600;margin-right:4px}
-
-/* Sekcja Status / QR Code */
-.mdowod-status{
+/* Header (Góra ekranu) */
+.header{
+  padding-top: calc(16px + var(--safe-area-top));
+  padding-bottom: 8px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin-top:20px;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+.header-back{display:flex;align-items:center;font-size:17px;font-weight:400;color:var(--accent)}
+.header-back img{width:12px;height:20px;margin-right:4px}
+.header-title{flex:1;text-align:center;font-size:17px;font-weight:600;color:var(--text-primary)}
+.header-question{width:22px;height:22px;margin-left:8px;filter:grayscale(1) brightness(0.7);} /* Ikona pytajnika */
+
+/* Czas nad kartą */
+.document-time-info {
+  text-align:center;
+  font-size:13px;
+  color:var(--text-secondary);
+  margin-bottom:16px;
+  font-weight:400;
+}
+.document-time-info strong {font-weight:500;}
+
+/* mDowód Card (Główna Karta) */
+.mdowod-card{
+  background: #1C1C1E; /* Bardziej subtelny kolor tła karty */
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  border: 0.5px solid #333; /* Subtelna ramka */
+}
+
+/* Wodny znak w tle - powtarzalny wzór RP */
+.mdowod-bg-overlay{
+  position:absolute;
+  inset:0;
+  opacity:0.04;
+  background-image:url('data:image/svg+xml;utf8,<svg width="100%" height="100%" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><text x="5" y="20" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text><text x="25" y="40" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text><text x="45" y="60" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text><text x="65" y="80" font-family="Inter, sans-serif" font-size="10" fill="white" transform="rotate(-15)">RP RP RP RP</text></svg>');
+  background-repeat:repeat;
+  pointer-events:none;
+}
+
+.mdowod-row{display:flex;align-items:flex-start;}
+.mdowod-col-left{flex-basis:45%;max-width:140px;margin-right:16px;}
+.mdowod-col-right{flex:1;font-size:14px;padding-top:10px;}
+
+/* Sekcja Zdjęcia (Lewa strona) */
+.mdowod-photo-box{
+  width:100%;
+  padding-bottom:120%; /* Proporcje zbliżone do dokumentowych */
+  background:#FF3040; /* Czerwony kolor tła dla orła */
+  border-radius:6px;
+  position:relative;
+  overflow:hidden;
+  margin-bottom:10px;
+}
+.mdowod-photo-box img.eagle-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: auto;
+  filter:brightness(1.1);
+}
+
+.mdowod-flag-box{
+  width:100%;
+  height:30px;
+  background:var(--card); /* Zmienione, by flaga wyglądała jak w dokumencie */
+  border-radius:6px;
+  overflow:hidden;
+  position:relative;
+  text-align:center;
+  font-size:10px;
+  font-weight:600;
+  color:var(--text-secondary);
+  padding-top:4px;
+}
+.mdowod-flag-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: #fff; /* Biały */
+}
+.mdowod-flag-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: #DC143C; /* Czerwony */
+}
+.mdowod-flag-box span {
+    position: relative;
+    z-index: 1;
+    display: block;
+    color: var(--text-primary);
+    font-size:12px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+/* Sekcja Danych (Prawa strona) */
+.mdowod-data-label{font-size:12px;color:var(--text-secondary);margin-bottom:0px;line-height:1.4}
+.mdowod-data-value{font-size:16px;font-weight:500;margin-bottom:12px;line-height:1.2}
+.mdowod-data-value.large-data {font-size: 18px; font-weight: 600; color: #fff; line-height: 1.2;}
+.mdowod-data-value:last-child{margin-bottom:0}
+
+/* Status bar na dole karty */
+.mdowod-status-bar{
+  display:flex;
+  align-items:center;
   padding-top:16px;
-  border-top:1px solid rgba(255,255,255,0.2);
+  margin-top:16px;
+  font-size:15px;
+  font-weight:600;
+  color:var(--green);
 }
-.mdowod-status-text{font-size:13px;font-weight:500;display:flex;align-items:center}
-.mdowod-status-text::before{content:'';width:8px;height:8px;background:#44C000;border-radius:50%;margin-right:6px;display:block}
-.mdowod-qr{width:36px;height:36px;background:#fff;border-radius:4px} /* Symulacja kodu QR */
+.mdowod-status-bar img{width:20px;height:20px;margin-right:8px;filter:sepia(1) hue-rotate(90deg) brightness(1.2);}
 
-/* Actor edit panel (zmieniony na sekcję 'Usługi') */
-.services-section{margin-top:12px;}
-.service-item{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid #eee;cursor:pointer}
-.service-item:last-child{border-bottom:none}
-.service-icon{width:36px;height:36px;border-radius:8px;background:var(--blue-light);margin-right:12px;display:flex;align-items:center;justify-content:center}
-.service-icon img{width:20px;height:20px}
-.service-text{flex:1;font-weight:500}
-.service-arrow{width:20px;height:20px;opacity:0.4}
+/* Skróty pod kartą */
+.shortcuts-grid{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:8px;
+  margin-bottom:24px;
+}
+.shortcut-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  padding:10px 4px;
+  border-radius:10px;
+  background:var(--card);
+  font-size:12px;
+  color:var(--text-primary);
+  height:90px;
+  justify-content:center;
+}
+.shortcut-icon{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  background:#2e2e2e;
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.shortcut-icon img{width:20px;height:20px;filter:brightness(1.5);}
+.shortcut-icon.pink {background:#723c72;} /* Dostosowanie kolorów ikon do zrzutów */
+.shortcut-icon.blue {background:#004b92;}
+.shortcut-icon.grey {background:#3c3c3c;}
 
-/* Bottom Sheet (dla symulacji akcji - jak w oryginalnym kodzie) */
-.modal{position:fixed;inset:0;background:rgba(10,12,16,0.4);display:none;align-items:flex-end;justify-content:center;padding:0;z-index:120}
+/* Sekcja 'Seria i numer mDowodu' (Otwiera Modal) */
+.serial-info-link{
+    padding:14px 16px;
+    background:var(--card);
+    border-radius:var(--radius);
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:15px;
+    font-weight:500;
+}
+.serial-info-link img{width:20px;height:20px;filter:grayscale(1) opacity(0.5);}
+
+/* Modal / Bottom Sheet dla szczegółów (Drugi zrzut ekranu) */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  z-index:120;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
 .modal.show{display:flex}
-.sheet{width:100%;max-width:720px;border-radius:16px 16px 0 0;background:var(--card);padding:18px 16px calc(24px + var(--safe-area));box-shadow:0 24px 60px rgba(10,14,22,0.2);transform:translateY(100%);transition:transform 0.3s ease-out}
-.modal.show .sheet{transform:translateY(0)}
-.sheet .handle{width:40px;height:4px;background:#e6e7ee;border-radius:999px;margin:0 auto 10px}
-.sheet h4{margin:0 0 16px;font-size:18px;font-weight:600}
-
-/* Symulacja Actor Panel w bottom sheet */
-.actor-panel-sheet input{width:100%;padding:10px 12px;margin:8px 0;border-radius:10px;border:1px solid #d6d6d6;font-size:16px}
-.actor-panel-sheet button{background:var(--accent);color:#fff;padding:12px 16px;border:none;border-radius:10px;cursor:pointer;font-weight:600;margin-top:12px;width:100%;font-size:16px}
-
-/* Responsive */
-@media (min-width:720px){
-  main.container{max-width:720px;margin:0 auto}
+.sheet{
+  width:100%;
+  max-width:720px;
+  border-radius:16px 16px 0 0;
+  background:#1C1C1E; /* Tło modala */
+  box-shadow:0 -5px 20px rgba(0,0,0,0.3);
+  transform:translateY(100%);
+  transition:transform 0.3s cubic-bezier(0.3, 0.7, 0.4, 1.0);
+  padding-bottom:calc(24px + var(--safe-area-bottom));
+  max-height: 90vh;
+  overflow-y: auto;
 }
+.modal.show .sheet{transform:translateY(0)}
+.sheet-content{padding:0 16px;}
+
+/* Modal Header */
+.sheet-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 16px 10px;
+  background: #1C1C1E;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.sheet-header-title{flex:1;text-align:center;font-size:17px;font-weight:600;color:var(--text-primary)}
+
+/* Sekcje w Modalu */
+.sheet-section{
+    margin-bottom:0;
+    padding:16px 0;
+    border-bottom:0.5px solid #333; /* Linia rozdzielająca sekcje */
+    color:var(--text-primary);
+}
+.sheet-section:last-child{border-bottom:none;}
+
+.sheet-item-full {
+    margin-bottom:16px;
+    font-size:15px;
+}
+.sheet-item-full-label {
+    font-size:14px;
+    color:var(--text-secondary);
+    margin-bottom:4px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.sheet-item-full-value {
+    font-size:24px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+.sheet-item-meta {
+    font-size:12px;
+    color:#777;
+    margin-top:4px;
+}
+.sheet-copy-btn{
+    background:#333;
+    color:var(--accent);
+    padding:4px 10px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:500;
+}
+
+.sheet-data-row {
+    margin-bottom: 20px;
+}
+
+.sheet-collapsible-title {
+    font-size:17px;
+    font-weight:600;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 0;
+    cursor:pointer;
+}
+.sheet-collapsible-title img {
+    width:16px;
+    height:16px;
+    filter:grayscale(1) opacity(0.5);
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
+.sheet-collapsible-title.expanded img {
+    transform: rotate(180deg);
+}
+.sheet-collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    padding-bottom: 16px;
+}
+
+.sheet-update-info {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    font-size:15px;
+}
+.sheet-update-info button {
+    background:var(--accent);
+    color:#fff;
+    padding:6px 12px;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:500;
+}
+
+/* Panel edycji (ukryty domyślnie, tylko dla demo) */
+.actor-panel {
+    background: #2e2e2e;
+    padding: 16px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.actor-panel input {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 8px;
+    border: 1px solid #4a4a4a;
+    background: #121212;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+.actor-panel button {
+    background: var(--accent);
+    color: #fff;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+    width: 100%;
+    font-size: 16px;
+}
+
+
+/* Bottom Navigation */
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(28, 28, 30, 0.9);
+  border-top:0.5px solid #333;
+  display:flex;
+  justify-content:space-around;
+  padding-bottom:var(--safe-area-bottom);
+  z-index:110;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.nav-item{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:8px 0;
+  font-size:10px;
+  color:var(--text-secondary);
+  font-weight:500;
+}
+.nav-item-icon{
+  width:28px;
+  height:28px;
+  margin-bottom:4px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.nav-item-icon img{width:22px;height:22px;filter:grayscale(1) opacity(0.5);}
+.nav-item.active{color:var(--accent)}
+.nav-item.active .nav-item-icon img{filter:none;}
+
+/* Responsive dla lepszego wyglądu na dużych ekranach */
+@media (min-width:720px){
+  main.container{max-width:400px;margin:0 auto;}
+  .sheet{max-width:400px;margin:0 auto;}
+  .bottom-nav{max-width:400px;margin:0 auto;left:auto;right:auto;}
+}
+
 </style>
 </head>
 
 <body>
 <div class="app">
 
-  <header class="top-bar">
-    <div class="top-bar-title">Twoje dokumenty</div>
-    <div class="top-bar-icon"></div> </header>
+  <header class="header">
+    <a href="#" class="header-back">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE1IDIwLTgtOCAzLTQtMy00djQgbTgtOCA4IDh2LTMuNzUgbS00LTQgbTEwIDQgMS00djMiLz48L3N2ZyI alt="Wróć">
+        Wróć
+    </a>
+    <div class="header-title">mDowód</div>
+    <img class="header-question" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNOC45NDYgMTMuODE2Yy0uNTcuMjU0LS45NDYuNzkyLS45NDYgMS4zOTR2Mi42MjhIMTRWMjAuNjZtLTIuMzE2LTMuNTQ2YzAtLjM0NC4yMDItLjY0NC40OTMtLjc5NC4yODgtLjE0Mi42MjctLjE1NC45MDMtLjA5LjU1NS4xMjggMS4xMTMtLjE4NiAxLjEzNC0uNzM1LjAyLS41NTctLjM1OC0uOTg4LS44MjgtMS4xNzItLjE1LS4wNTgtLjY3Ny0uMjEtMS4xNzMtLjQzNS0uNDk5LS4yMjUtLjk2LS41NzctMS4yOTMtLjk5Mi0uNTYyLS43MDctLjcxMy0xLjczNC0uMzU0LTIuNTIuNTgyLTEuMzI4IDEuNzAyLTIuMjMgMy4wMjQtMi41NTIuOTktLjI0NCAyLjA2LS4wODQgMi44OTguNDMyYTMuODQgMy44NCAwIDAgMSAxLjM4NiAzLjY1NU0xMi42NjYgNC4zMzRsLjAwOCAwIi8+PC9zdmc+" alt="Pomoc">
+  </header>
 
   <main class="container">
-    <a href="#" onclick="showModal(event, 'mdowod-details-sheet')">
-      <div class="mdowod-card">
-        <div class="mdowod-header">
-          <div class="mdowod-title">mDowód</div>
-          <div class="mdowod-meta">PL · Wersja: 4.0</div>
+    <div class="document-time-info" id="dynamic-time"></div>
+
+    <div class="mdowod-card">
+      <div class="mdowod-bg-overlay"></div>
+      
+      <div class="mdowod-row">
+        <div class="mdowod-col-left">
+          <a href="#" onclick="showActorPanel(event)">
+            <div class="mdowod-photo-box">
+              <img id="actor-photo" class="eagle-placeholder" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiI+PHBhdGggZD0iTTQ5IDNjNy0uMyAxMy41IDMgMTggNCAzLjUgLjIgNi42IDEuNiA5LjUgMy4zIDMuNyAyLjEgNS4yIDcgMi42IDEwLTEuNSAyLjMtMyA0LjUtNC43IDYuNC01IDUuNi0xMi4zIDguNi0yMC4xIDguN2gtLjUgMi4yYzguNiAwIDE1LjUtMi41IDIxLjctNy4xIDcuOC01LjkgMTMtMTQgMTQuNS0yMi45LjIgMCAuMy0uMS4zLS4zYTEzLjIgMTMuMiAwIDAgMC0zLjctMTMgMi4yIDIuMiAwIDAgMC0uMS0uMWMtMi41LTEuNy01LjEtMi42LTcuOC0zLjMtLjktLjItMS43LS41LTIuNy0uNC01LjUgLjYtMTAuNy0uNi0xNi0uMi02IC40LTEyIDEtMTgtLjItMi0uNC00LS43LTYtLjgtLjctLjEtMS41LS4xLTIuMi0uMS02LjMgMC0xMi41IDEuMy0xOC40IDMgNC40LS4yIDYuNy0uNCA5LTEuNCA0LS44IDcuNC0zLjEgOC41LjdDMjcuNyA4LjQgNDAgOC41IDQ5IDNaIiBmaWxsPSIjRkZGRkZGIi8+PHBhdGggZD0iTTI2LjcgNjYuNmMzLjIgMS41IDYgMy42IDguMiA1LjcgMS44IDEuNiAzLjIgMy41IDQuMyA1LjYtLjEuMS0uMi4zLS40LjQgMC0uMy41LS43LjgtMS4xLjItLjMuNS0uNi43LS45LjktMS40IDEuOC0yLjUgMi44LTMuNnMtMi42LTEuOS0zLjktMi44Yy0yLjUtMS43LTUtMy40LTcuNi01LTUgNS05LjIgMTEuMy0xMC40IDE4LjUtLjIgMS40LS41IDIuOC0uOCAzLjktLjYgMi40LTEuMiA0LjgtMS43IDcuMi0uNCAyLS44IDQtMS4xIDYtLjIgMS4yLS4yIDIuMi0uMSA0LjEtLjQgMS4yLS42IDIuNC0uNyAzLjctLjEuMyAwLS4xLjMtLjEuNmE4LjEgOC4xIDAgMCAwIDEuMyA0LjcgMi4zIDIuMyAwIDAgMCAuMSAuMmMuNy4yIDEuNS4yIDIuMS4xIDMtLjQgNi0uNSAzLTZjLTIuNC0yLjctNC4zLTUuNS01LTkuMS0xLjItNC42LS42LTkuMyAxLjItMTMuNy42LTEuNSAxLjItMy4xIDEuNy00LjYgLjgtMi40IDEuNi00LjggMi40LTcuMi41LTEuMyAxLjEtMi42IDEuNS00em0zOC40IDIuMmMtMi4xIDEuNC00LjMgMi44LTYuNCA0LTUuMiAzLjEtMTIuNSA0LjQtMTkuMyAzLjQtNy43LTEuMS0xMy42LTUuOC0xNi0xMi41LS42LTEuOS0xLjItMy44LTEuNy01LjgtLjUtMi0uOS00LjEtMS4zLTYuMS0uMy0xLjQtLjUtMi44LS41LTQuMyAwLTEuNS4xLTMuMS41LTVsLjctMy4zYy43LTMuMiAxLjYtNi40IDIuNi05LjZsMi42LTguMWMuNi0xLjkgMS41LTIuNyAyLjctMi43IDEuMSAwIDEuOSA4LjMgMS45IDkuMiAwIDMuMyAwIDYuNS0uMSA5LjdzLjEgNi4yLjEgOS42Yy41LjYgMS40IDEuMSAyLjcgMS43czIuNi44IDQgMS42Yy0uMy41LS42IDEtLjkgMS41LS4yLjQtLjQgLjctLjUgMS4xLS40LjktLjggMS44LTEuMSAyLjctLjIgLjUtLjIgMS4xLS40IDEuNnMtLjIgMS0uMyAxLjVjLS4xLjQtLjIgLjktLjIgMS40LS4xLjUtLjIgMS0uMiAxLjUtLjIgMS0uMiAyLS4yIDMuM3MtLjMgMi40LS4zIDMuNmMwIDIgMCAzLjcuMSAxY00zOC4yIDQxYy0xLjMtLjEtMi42LS4xLTMuOS0uMS0uNyAwLTEuMyAwLTIgLjFzLTEuNC4xLTIuMS40Yy0yLjUgLjgtMy42IDIuNC0zLjQgNS4xLjQgNi40IDMuNSA5LjggOC4zIDEyLjggMi45IDEuOCA2LjEgMy4zIDkuNSAzLjhIOS4yYy0xLjUgMC0yLjUgMS0yLjUgMi41YTEuMyAxLjMgMCAwIDAgLjIgLjUgMTMuMyAxMy4zIDAgMCAxIDUuMy0xLjMgMTQgMTQgMCAwIDEgNi4zLS41YzguMy41IDE1LjYgMy41IDIxLjUgOC43LjcgLjcgMS4zIDEuNCAxLjcgMi4zLjIgLjMgMCAuNi0uMiAxYWE3LjEgNy4xIDAgMCAxLTMuNSA0LjJjLS45LjItMS44LjMtMi43LjNsLTcuOC0uNWMtNC0uMy03LjktMS4zLTExLjctMy42LTQuOS0zLTcuNS02LjktOS4yLTExLjctLjQtMS4xLS43LTIuNC0uOC0zLjYtLjEtLjktLjEtMS44LS4xLTIuNyAwLS42LjEtMS40LjItMmwuMy0xLjhhLjMgLjMgMCAwIDEtLjEtLjQgMy45IDMuOSAwIDAgMS0uNS0uNmMtLjItLjMtLjQtLjYtLjYtLjktLjEtLjItLjItLjUtLjMtLjcgMC0uMSAwLS4xIDAtLjItLjQtLjQtLjctLjctMS0xLjEtMS41LS44LTIuMi0xLjMtMy4xLTEuN3MtMS45LS45LTMuMS0xLjRsLS41LS4xYy0uNC0uMS0uOC0uMi0xLjMtLjJ6TTQ5IDQyYy02LjYgMC0xMy0xLjYtMTguMy00LjMtMi4zLTEuMi00LjEtMi45LTUuMy01LTEuNS0yLjYtMS42LTUuNi0uNC04LjcgMi01IDUuNi05LjUgMTAtMTIuNyAzLjYtMi41IDcuOC00LjQgMTIuNC01LjUgMi4yLS41IDQuNC0uNyA2LjUtLjhTNDYgNyA1MS41IDcgNTkuNSA4IDY0LjUgOS40YzUuNCAxLjUgMTAuMiA0IDE0LjMgNy4xIDIgMS41IDMuNSAzLjQgNC40IDUuNSAxLjEgMi41IDEgNS40LS40IDcuOC0yLjUgNC42LTYuNyA3LjgtMTEuNiA5LjYtNC44IDEuOC0xMC4xIDIuMi0xNS41IDIuMnoiIGZpbGw9IiNGRkZGRkYiLz48L3N2Zw==" alt="Orzeł w tle">
+            </div>
+          </a>
+
+          <div class="mdowod-flag-box">
+             <span>Rzeczpospolita Polska</span>
+          </div>
         </div>
 
-        <div class="mdowod-photo">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA3MiA5MiI+PHJlY3Qgd2lkdGg9IjcyIiBoZWlnaHQ9IjkyIiBmaWxsPSIjRjBGMEYwIi8+PHBhdGggZD0iTTM2IDExYTEyIDEyIDAgMCAwLTMgMjMuMzUgNi43MiA2LjcyIDAgMCAwLTIgMy42NSA4IDggMCAwIDAgLTcgNS4yNkwxOSAzNmwxMyAxMmwxLTNjNC42LTUuMiA1LTExLjUgNC0xNi41LS43LTMtMi40LTMtNC0zLjUtMy0xLTIgMS41LTIgNC0uNSA0LjUtMS43IDguNi0yLjUgMTMgMCAuMSAwIC4yLS4yLjQgLS4xIDAtLjEgMCAwIDAtLjQgMC0uNSAwLS41IDAgLTEuMS0uNy0xLjUtMS4zLS44LS45LTQuMi02LjktNC4yLTE3LjJ6TTE2IDU3Yy43LTQgMi40LTguMyA0LTExLjMgMS4yIDIuMiAzIDQuNCA2IDUuNCA0LTIuNiA0LTUuNCA0LTkgMS01IDMtNiAzLTkgMy0yLTMtNi0zLTlsLTIuMy0uNWMuNC0zLjUgMS4xLTcgMi0xMC41IDEtNCA1LTEgNy0xczYgMyA2IDctMiAyLjUgMSAxLjVjLS42LjYtMS4xIDEuMi0xLjcgMi41bC0uNiAxLjVjLS41IDEtMSAxLjYtMS42IDItLjkgLjYtMi4xIDEuMi0zLjIgMS44LTMgMS41LTcgMy0xMSA0LTVgIiBmaWxsPSIjNzA3MDcwIi8+PC9zdmc+" alt="Zdjęcie" />
+        <div class="mdowod-col-right">
+          <div class="mdowod-data-label">Imię (imiona)</div>
+          <div class="mdowod-data-value large-data" id="actor-name-short">discord.gg/fobywatel</div>
+
+          <div class="mdowod-data-label">Nazwisko</div>
+          <div class="mdowod-data-value large-data" id="actor-surname">discord.gg/fobywatel</div>
+
+          <div class="mdowod-data-label">Obywatelstwo</div>
+          <div class="mdowod-data-value">POLSKIE</div>
+
+          <div class="mdowod-data-label">Data urodzenia</div>
+          <div class="mdowod-data-value" id="actor-dob">9.07.2025</div>
+
+          <div class="mdowod-data-label">Numer PESEL</div>
+          <div class="mdowod-data-value" id="actor-pesel">00000000000</div>
         </div>
-        <div class="mdowod-details">
-          <h3 id="actor-name">Jan Kowalski</h3>
-          <p><strong>Nazwisko rodowe:</strong> Kowalska</p>
-          <p id="actor-pesel"><strong>PESEL:</strong> 85010112345</p>
-          <p><strong>Ważność:</strong> bezterminowo</p>
-        </div>
-        
-        <div class="mdowod-status">
-          <div class="mdowod-status-text">Aktywny</div>
-          <div class="mdowod-qr"></div> </div>
       </div>
+
+      <div class="mdowod-status-bar">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjM0Q4MTBGIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJtNSAxMiA1IDUgOS05Ii8+PC9zdmc+" alt="Ikona Checkmark">
+        Dokument ważny
+      </div>
+    </div>
+
+    <div class="shortcuts-grid">
+      <a href="#" class="shortcut-item">
+        <div class="shortcut-icon blue">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMjEgMTUgMTMgNyAyMSAxNSIgLz48cGF0aCBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik0zIDkgMTEgMTcgMyA5IiAvPjxwYXRoIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTE4IDIgMTggMjIgMTggMiIgLz48cGF0aCBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik02IDIgNiAyMiA2IDIiIC8+PC9zdmc+" alt="Potwierdź dane">
+        </div>
+        Potwierdź swoje dane
+      </a>
+      <a href="#" class="shortcut-item" onclick="showModal(event, 'details-modal')">
+        <div class="shortcut-icon pink">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTQgMTJoMi00YzAtMS4xLS45LTIgMi0ySDYuNWMtLjg4IDAtMS43NS4xNS0yLjUuNDUtMi4zNS45LTMuMjYgMy4xMS0yLjMyIDUuNDZzMi40MiAzLjg2IDQuNzcgNC43NWMuNzUuMjkgMS42Mi40NCAyLjUuNDRoMi41bS02IDBoNi0zTTQgMTRoMS4yNTIiLz48cGF0aCBzdHJva2U9IiNmZmZmZmYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLXdpZHRoPSIxLjUiIGQ9Ik0xMi42NzcgMi40NTJhMiAyIDAgMCAxIDIuNjQyLS40NWwxLjAxNi43MzJhMyAzIDAgMCAxIDEuMTIyIDIuM3YxLjE4NWExLjE3IDEuMTcgMCAwIDEgLjYgLjIuNTEgLjUxIDAgMCAwIC4yLjEuNS41IDAgMCAxIC40LjQgMy45MiAzLjkyIDAgMCAxIC42IDJtLTMuMDM4IDguODQ3Yy4yMTUtLjQ4NC4wMy0xLjA0LS4zOTgtMS4zNzUtLjgxOS0uNjQyLTEuOTg2LTEuMjM3LTMuMDk0LS4wNjktMS4xMDggMS4xNjgtLTIuNTM4IDEuNTQ0LTMuNzU0Ljc4Ni0uMjY1LS4xNjQtLjM3LS40NTktLjI2OC0uNzIzLjEwMi0uMjY0LjM2MS0uNDU5LjY2Ny0uNTI0IDEuNDg0LS4zMTYgMy4wMTQtLjM5IDQuNDktLjI4OSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgLz48L3N2Zz4=" alt="Dane dowodu">
+        </div>
+        Dane dowodu osobistego
+      </a>
+      <a href="#" class="shortcut-item">
+        <div class="shortcut-icon grey">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTAgMTZhMiAyIDAgMSAwIDQtNHYtM2gtMW0tMi0zaDRtLTQgMGgybS0yIDBhMiAyIDAgMCAxIDAtNHYtM2gtMm00IDBoNHYzaDJtLTQtM2gybTMgMTdhMiAyIDAgMSAwIDQgNHYyYzAgMS0xIDItMiAySDJtMCAwYTIgMiAwIDAgMCAwLTJoMThjMSAwIDItMSAyLTJWMi0yTDYgMTEiLz48L3N2Z3M+" alt="Zastrzeż PESEL">
+        </div>
+        Zastrzeż PESEL
+      </a>
+      <a href="#" class="shortcut-item">
+        <div class="shortcut-icon grey">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTEwLjUgMTJoLTFhMSAxIDAgMCAwIDAtMnIuNS0zLjUtMy41LTQuNU0xMy41IDE0aDFhMSAxIDAgMCAwIDAtMnIuNS0zLjUgMy41LTQuNU0xMi41IDJoLTFhMSAxIDAgMCAwIDAtMnIuNS0zLjUtMy41LTQuNU05LjUgMmgxYTEgMSAwIDAgMCAwLTJzMi41LTMuNSAzLjUtNC41Ii8+PC9zdmc+" alt="Pozostałe skróty">
+        </div>
+        Pozostałe skróty
+      </a>
+    </div>
+
+    <a href="#" class="serial-info-link" onclick="showModal(event, 'details-modal')">
+        Seria i numer mDowodu
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJtOSA2IDYgNi02IDYiLz48L3N2Z3M+" alt="go">
     </a>
 
-    <section class="card services-section">
-      <div style="font-weight:700;margin-bottom:8px">Usługi</div>
-      
-      <div class="service-item">
-        <div class="service-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggZmlsbD0iIzAyNjBFOCIgZD0iTTEyIDJjNS41MjMgMCAxMCA0LjQ3NyAxMCAxMHMtNC40NzcgMTAtMTAgMTBTMiAxNy41MjMgMiAxMiA2LjQ3NyAyIDEyIDJtLjM1IDYuNjVjLS4wNyAwLS4xNSAwLS4yLjA1bC0yLjYgMS41YS41LjUgMCAwIDAtLjA1LjlsMi42IDEuNWwuMi4wNWMuMDcuMDQuMTUuMDQuMiAwIC4wNyAwIC4xNC0uMDMuMi0uMDdsMi42LTEuNS4wNC0uMjdhLjUuNSAwIDAgMC0uMTEtLjJjLS4wMy0uMDQtLjA5LS4wNi0uMTYtLjA2bC0yLjYtMS41YTEuMTUgMS4xNSAwIDAgMC0uMi0uMDVNMTEuNSA3YTEuNSAxLjUgMCAxIDEtMyAwIDEuNSAxLjUgMCAwIDEgMyAwek0xMy40IDE5LjM1Yy0uMTcuMDUtLjM1LjA3LS41NS4wN2gtLjA1Yy0uMiAwLS40Mi0uMDItLjYtLjA2LS42Mi0uMTgtMS4wNS0uNTYtMS4yNS0xLjFhMS42MSAxLjYxIDAgMCAxLS4xOC0uNmMtLjA1LS4zLS4wNC0uNDYuMDItLjVzLjE4LS40LjQyLS41MWMuMjUtLjExLjU1LS4xNi45LS4xNi40IDAgLjcxLjA1IDEgLjE1LjI4LjEgLjUgLjI4LjYuNGEuOTQuOTQgMCAwIDEtLjUgMS4zYzEuNi4zIDEuNiAxIDEuNiAxLjZsLS41LjVhMi4zIDIzIDAgMCAxLS42LjcuMzkzLjM5MyAwIDAgMS0uNCAuMTQiLjk4LjkuNCAwIDAtLjktMS4xWm0yLjYgMS40LS41LS41YTIuNiAyLjYgMCAwIDEtLjcuNmwtLjQuMTUuMS42YS41OS41OSAwIDAgMCAuMS40Yy4wNy4xLjE2LjEuMjIuMS4xLjA1LjItLjA1LjMtLjEuMDgtLjEuMTMtLjMgLjE0LS41VjIwLjFsLjE0LS41YTIgMiAwIDAgMCAuNC0uNmMuMi0uMi4zLS41LjMtLjh2LTEuM2wuNS0uN2EuOTkuOTkgMCAwIDEtLjEgMS4yYy0uMjguMjItLjUgLjQ0LS41LjZzLjE0LjMuNDguNGE0LjUgNC41IDAgMCAwLjctLjguNS41IDAgMCAwLS41LS41WiIvPjwvc3ZnPg==" alt="icon"></div>
-        <div class="service-text">Zastrzeż PESEL</div>
-        <img class="service-arrow" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSRtOSA2IDYgNi02IDYiLz48L3N2Zz4=" alt="go">
-      </div>
-      
-      <div class="service-item">
-        <div class="service-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMDI2MEU4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTMgNWg2YTIgMiAwIDAgMSAyIDJ2NGEyIDIgMCAwIDEtMiAybS01LTkgNC00djggTSQgMTJhMiAyIDAgMCAxIDIgMiA0IDQgMCAwIDAgMiA0IDIgMiAwIDAgMCA0IDIgOCA4IDAgMCAwLTEwLTgiLz48L3N2Zz4=" alt="icon"></div>
-        <div class="service-text">Potwierdź dane</div>
-        <img class="service-arrow" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSNtOSA2IDYgNi02IDYiLz48L3N2Zz4=" alt="go">
-      </div>
-    </section>
-
-    <div style="text-align:center;margin-top:20px;color:var(--muted);font-size:13px">
-      Aplikacja mObywatel <span style="font-weight:600">v4.0.5</span>
+    <div class="actor-panel" id="edit-data-panel" style="display:none;">
+        <p style="font-size:14px; color:var(--text-secondary); margin-top:0;">
+            **Panel Edycji Danych (DEMO)**
+        </p>
+        <input type="text" id="edit-name" placeholder="Imię i nazwisko">
+        <input type="text" id="edit-pesel" placeholder="PESEL">
+        <input type="text" id="edit-dob" placeholder="Data urodzenia (np. 09.07.2025)">
+        <button onclick="saveActorData()">Zapisz i ukryj panel</button>
     </div>
+
   </main>
 </div>
 
-<div class="modal" id="mdowod-details-sheet" onclick="closeModal(event)">
+<div class="modal" id="details-modal" onclick="closeModal(event)">
   <div class="sheet" onclick="event.stopPropagation()">
-    <div class="handle"></div>
-    <h4>Szczegóły mDowodu (Demo)</h4>
+    <header class="sheet-header">
+        <a href="#" class="header-back" onclick="closeModal(event)">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE1IDIwLTgtOCAzLTQtMy00djQgbTgtOCA4IDh2LTMuNzUgbS00LTQgbTEwIDQgMS00djMiLz48L3N2Z3M+" alt="Wróć">
+            Wróć
+        </a>
+        <div class="sheet-header-title">mDowód</div>
+        <img class="header-question" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNOC45NDYgMTMuODE2Yy0uNTcuMjU0LS45NDYuNzkyLS45NDYgMS4zOTR2Mi42MjhIMTRWMjAuNjZtLTIuMzE2LTMuNTQ2YzAtLjM0NC4yMDItLjY0NC40OTMtLjc5NC4yODgtLjE0Mi42MjctLjE1NC45MDMtLjA5LjU1NS4xMjggMS4xMTMtLjE4NiAxLjEzNC0uNzM1LjAyLS41NTctLjM1OC0uOTg4LS44MjgtMS4xNzItLjE1LS4wNTgtLjY3Ny0uMjEtMS4xNzMtLjQzNS0uNDk5LS4yMjUtLjk2LS41NzctMS4yOTMtLjk5Mi0uNTYyLS43MDctLjcxMy0xLjczNC0uMzU0LTIuNTIuNTgyLTEuMzI4IDEuNzAyLTIuMjMgMy4wMjQtMi41NTIuOTktLjI0NCAyLjA2LS4wODQgMi44OTguNDMyYTMuODQgMy44NCAwIDAgMSAxLjM4NiAzLjY1NU0xMi42NjYgNC4zMzRsLjAwOCAwIi8+PC9zdmc+" alt="Pomoc">
+    </header>
 
-    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;">
-      Tutaj w pełnej aplikacji pojawiłaby się lista wszystkich szczegółowych danych (imiona, nazwisko, data urodzenia, itp.) oraz sekcja umożliwiająca "Udostępnij dane" lub "Okazać do weryfikacji".
-    </p>
+    <div class="sheet-content">
+        <div class="sheet-section">
+            <div class="sheet-item-full">
+                <div class="sheet-item-full-label">
+                    Seria i numer mDowodu
+                    <button class="sheet-copy-btn">Kopiuj</button>
+                </div>
+                <div class="sheet-item-full-value" id="mdowod-serial">MEVM 21949</div>
+                <div class="sheet-item-meta">
+                    Dane mDowodu i dowodu osobistego są inne – to dwa różne dokumenty.
+                </div>
+            </div>
+            
+            <div class="sheet-data-row">
+                <div class="mdowod-data-label">Termin ważności</div>
+                <div class="mdowod-data-value" id="modal-expiry">8.08.2035</div>
+            </div>
+            <div class="sheet-data-row">
+                <div class="mdowod-data-label">Data wydania</div>
+                <div class="mdowod-data-value" id="modal-issue">8.08.2025</div>
+            </div>
+            <div class="sheet-data-row">
+                <div class="mdowod-data-label">Imię ojca</div>
+                <div class="mdowod-data-value">discord.gg/fobywatel</div>
+            </div>
+            <div class="sheet-data-row">
+                <div class="mdowod-data-label">Imię matki</div>
+                <div class="mdowod-data-value">discord.gg/fobywatel</div>
+            </div>
+        </div>
 
-    <div class="actor-panel-sheet">
-      <input type="text" id="edit-name" placeholder="Imię i nazwisko (np. Anna Kowalska)">
-      <input type="text" id="edit-pesel" placeholder="PESEL (np. 95050598765)">
-      <button onclick="saveActorData()">Zaktualizuj dane na karcie (Tylko demo)</button>
+        <div class="sheet-section">
+            <div class="sheet-collapsible-title" onclick="toggleCollapsible(this)">
+                Twoje dodatkowe dane
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjN2I3YzgxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJtOSA2IDYgNi02IDYiLz48L3N2Z3M+" alt="Rozwiń">
+            </div>
+            <div class="sheet-collapsible-content">
+                <div class="sheet-data-row">
+                    <div class="mdowod-data-label">Miejsce urodzenia</div>
+                    <div class="mdowod-data-value">Planet Earth</div>
+                </div>
+                <div class="mdowod-data-row">
+                    <div class="mdowod-data-label">Imię drugie</div>
+                    <div class="mdowod-data-value">DEMO</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sheet-section">
+            <div class="sheet-update-info">
+                Ostatnia aktualizacja
+                <span style="font-weight:500; color:var(--text-primary);">24.12.2024</span>
+                <button>Aktualizuj</button>
+            </div>
+        </div>
     </div>
   </div>
 </div>
 
+<nav class="bottom-nav">
+  <a href="#" class="nav-item active">
+    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjMGE4NDJGZiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTE2LjM1IDcuMzctMi40Mi0yLjQxTDEyLjM1IDYuNTFsMS40MiAxLjQyeiIvPjxwYXRoIHN0cm9rZT0iIzBhODQyRiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0ibTEwIDE1LjkxIDUuNTktNS41OWExLjkgMS45IDAgMCAwIDAtMi42NyAxLjg3IDEuODcgMCAwIDAtMi42NiAwbC01LjU2IDUuNTVhMi4wMiAyLjAyIDAgMCAwIDAgMi44NmwxLjggMS44YzEuMTggMS4wMiAzIDEuMDIgNC4wNi4wMm0tOS01YTMgMyAwIDAgMS0uMzktMi4yOCAxLjYgMS42IDAgMCAxIC43NC0uNjEuNjkuNjkgMCAwIDEgLjcuMi43LjcgMCAwIDEgLjYgLjUgMS44IDEuOCAwIDAgMCAuMS44YTMgMyAwIDAgMS01IDEuNSIvPjwvc3ZnPg==" alt="Dokumenty"></div>
+    Dokumenty
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTMgNWg2YTIgMiAwIDAgMSAyIDJ2NGEyIDIgMCAwIDEtMiAybS01LTkgNC00djggTSQgMTJhMiAyIDAgMCAxIDIgMiA0IDQgMCAwIDAgMiA0IDIgMiAwIDAgMCA0IDIgOCA4IDAgMCAwLTEwLTgiLz48L3N2Z3M+" alt="Usługi"></div>
+    Usługi
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNMTAgMTcgMTQgMTdNMTAgMjEgMTQgMjFNMyAxNGg3bTcgMGg0bTMtN2g0bS00IDdoMTRhMiAyIDAgMCAwIDIgMm0tMTgtOGE0IDQgMCAwIDEtOCA0djE2YTIgMiAwIDAgMCAyIDJzNiAwIDcgMG03LTQgMi4xNy0uMTNBNiA2IDAgMCAwIDE1LjY2IDIuNDMiLz48L3N2Z3M+" alt="Kod QR"></div>
+    Kod QR
+  </a>
+  <a href="#" class="nav-item">
+    <div class="nav-item-icon"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZD0iTTUgMTJIMi0yTTEwIDEwaDRNNyAxMmE1IDUgMCAwIDAgMTAgMHY1IDVzLTEuNSA0LTYgNC02LTRsLTItMlY5Ii8+PC9zdmc+" alt="Więcej"></div>
+    Więcej
+  </a>
+</nav>
+
 <script>
-// Funkcja do pokazywania modala
+// Funkcja dynamicznego czasu
+function updateTime() {
+    const now = new Date();
+    // Formatowanie czasu (np. 21:18)
+    const timeString = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+    // Formatowanie daty (np. 08.08.2025 - zmienione na aktualną datę z fikcyjnym 2025 r. dla spójności)
+    const dateString = now.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\./g, '.');
+
+    document.getElementById('dynamic-time').innerHTML = `<strong>${timeString}</strong> ${dateString}`;
+}
+// Uruchomienie dynamicznego czasu
+setInterval(updateTime, 1000);
+updateTime(); // Wywołanie od razu, by nie było opóźnienia
+
+// Funkcje Modal/Sheet
 function showModal(event, id) {
-  event.preventDefault(); // Zapobiega domyślnej akcji (przejściu do linku)
+  event.preventDefault();
   const modal = document.getElementById(id);
   if (modal) {
     modal.classList.add('show');
-    document.body.style.overflow = 'hidden'; // Zapobiega przewijaniu tła
+    document.body.style.overflow = 'hidden';
   }
 }
 
-// Funkcja do zamykania modala
 function closeModal(event) {
-  if (event.target.classList.contains('modal')) {
-    event.target.classList.remove('show');
-    document.body.style.overflow = ''; // Przywraca przewijanie tła
-  }
-}
-
-// Funkcja zapisująca dane aktora
-function saveActorData(){
-  const nameInput = document.getElementById('edit-name');
-  const peselInput = document.getElementById('edit-pesel');
-  const actorNameElement = document.getElementById('actor-name');
-  const actorPeselElement = document.getElementById('actor-pesel');
-
-  if(nameInput.value) {
-    actorNameElement.textContent = nameInput.value;
-  }
-  if(peselInput.value) {
-    actorPeselElement.innerHTML = `<strong>PESEL:</strong> ${peselInput.value}`;
-  }
-
-  // Opcjonalnie: Zamknij modal po zapisie (dla lepszego UX demo)
-  const modal = document.getElementById('mdowod-details-sheet');
-  if (modal) {
+  const modal = document.getElementById('details-modal');
+  if (event.target.classList.contains('modal') || event.currentTarget.classList.contains('header-back')) {
     modal.classList.remove('show');
     document.body.style.overflow = '';
   }
+}
 
-  // Wyczyść pola
-  nameInput.value = '';
-  peselInput.value = '';
+// Funkcja rozwijania "Dodatkowe dane"
+function toggleCollapsible(element) {
+    const content = element.nextElementSibling;
+    const arrow = element.querySelector('img');
+
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        element.classList.remove('expanded');
+    } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+        element.classList.add('expanded');
+    }
+}
+
+// Funkcja do pokazywania/ukrywania panelu edycji po kliknięciu zdjęcia
+function showActorPanel(event) {
+    event.preventDefault(); // Zapobiega ewentualnemu otwarciu linku
+    const panel = document.getElementById('edit-data-panel');
+    panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+// Funkcja zapisująca dane aktora (z Twojego oryginalnego kodu, zaktualizowana)
+function saveActorData(){
+  const nameInput = document.getElementById('edit-name');
+  const peselInput = document.getElementById('edit-pesel');
+  const dobInput = document.getElementById('edit-dob');
+
+  const nameParts = nameInput.value.trim().split(' ');
+  const firstName = nameParts.length > 0 ? nameParts[0] : '';
+  const surname = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+  
+  // Aktualizacja głównej karty
+  if(firstName) document.getElementById('actor-name-short').textContent = firstName + ' (imiona)';
+  if(surname) document.getElementById('actor-surname').textContent = surname;
+  if(peselInput.value) document.getElementById('actor-pesel').textContent = peselInput.value;
+  if(dobInput.value) document.getElementById('actor-dob').textContent = dobInput.value;
+
+  // Ukrycie panelu po zapisie
+  document.getElementById('edit-data-panel').style.display = 'none';
+
+  // Opcjonalnie: alert o zmianie
+  alert('Dane zaktualizowane w widoku (tylko demo)!');
 }
 </script>
 </body>
