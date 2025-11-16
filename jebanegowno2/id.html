@@ -1,136 +1,218 @@
-<!DOCTYPE html>
-<html lang="pl">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>mObywatel v4 — logowanie / mDowód</title>
-<link rel="shortcut icon" href="../images/coi_common_ui_ic_mobywatel_logo.svg" type="image/x-icon">
-<meta name="theme-color" content="#f5f6fb">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<link rel="manifest" href="../manifest.json">
-<script defer src="../jebanegowno2/assets/id.js"></script>
-<style>
-:root{
-  --blue:#064792;
-  --bg:#f5f6fb;
-  --card:#fff;
-  --accent:#064792;
-  --muted:#7b7c81;
-  --radius:14px;
-  --shadow:0 8px 24px rgba(17,24,39,0.06);
-}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="theme-color" content="#131419">
+    <title>mObywatel</title>
+    
+    <link href="../../../../../cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"/>
 
-*{box-sizing:border-box;user-select:none;-webkit-touch-callout:none;}
-body,html{margin:0;padding:0;height:100%;font-family:Roboto,sans-serif;background:var(--bg);color:#131419}
+    <style>
+        @font-face {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: 400;
+            src: url(../images/roboto_regular.ttf) format("truetype");
+        }
+        @font-face {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: 500;
+            src: url(../images/roboto_medium.ttf) format("truetype");
+        }
+        @font-face {
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: 700;
+            src: url(../images/roboto_bold.ttf) format("truetype");
+        }
 
-/* login layout */
-.Login_container{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:20px;}
-.Login_main{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%}
-.Login_logoTop{position:absolute;top:20px;width:180px;height:auto}
-.Login_changePassword{display:flex;justify-content:center;align-items:center;background-color:#dbebfa;border-radius:50%;width:6em;height:6em;margin-top:4em}
-.Login_changePasswordIcon{width:4em;height:4em;color:#075094}
-.Login_bioLogin{text-align:center;background:#dbebfa;border-radius:10em;padding:.2em 1em;margin:10px 0}
-.tekst_biometeria{color:#075094;font-size:.8em;font-weight:bold}
-.Login_passwordSection{background:#fff;display:flex;flex-direction:column;width:100%;padding:15px;border-radius:15px;max-width:400px;margin:20px 0}
-.Login_passwordLabel{color:#696978;font-size:.8em;font-weight:300;text-align:left}
-.Login_passwordInput{padding:1em;font-size:1em;border:1px solid #56595b;border-radius:.2em;width:100%;margin-top:.5em}
-.Login_passwordInput::placeholder{color:#696978}
-.Login_forgotPassword{color:#075094;text-align:right;font-size:.8em;font-weight:300}
-.Login_submitButton{width:100%;padding:.6em;background-color:var(--blue);color:#fff;border:none;border-radius:5em;cursor:pointer;font-weight:600;margin-top:3em;font-size:1em}
+        body, html {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            font-family: Roboto, sans-serif;
+            /* Ciemny gradient tła jak na zrzucie */
+            background: linear-gradient(180deg, #131419 0%, #17181D 50%, #0D0E12 100%);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            overflow: hidden; /* Zapobiega przewijaniu */
+        }
 
-/* mDowód panel */
-#modal{position:fixed;inset:0;background:rgba(10,12,16,0.4);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:120}
-#modal.show{display:flex}
-.sheet{width:100%;max-width:720px;border-radius:16px;background:var(--card);padding:18px 16px 24px;box-shadow:0 24px 60px rgba(10,14,22,0.2)}
-.sheet .handle{width:40px;height:4px;background:#e6e7ee;border-radius:999px;margin:0 auto 10px}
-.id-card{display:flex;gap:12px;align-items:center;margin-bottom:12px}
-.id-avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#dfefff,#e6f7ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
-.id-meta{flex:1;display:flex;flex-direction:column;gap:4px}
-.id-meta input{border:1px solid #ccc;padding:6px;border-radius:6px;font-size:14px;width:100%}
-.sheet label{font-size:12px;color:var(--muted);margin-bottom:2px;display:block}
-.saveBtn{padding:8px 16px;background:var(--blue);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-top:10px;align-self:flex-end}
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
 
-/* responsive */
-@media(max-width:600px){
-.id-avatar{width:56px;height:56px;font-size:18px}
-.sheet{padding:14px 12px 20px}
-}
-</style>
+        .header-content {
+            padding: 40px 20px 0;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .logo-image {
+            width: 30px; /* Rozmiar godła */
+            height: auto;
+            margin-right: 10px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .welcome-text {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .login-prompt {
+            font-size: 18px;
+            font-weight: 400;
+            margin-top: 5px;
+            color: #ccc;
+        }
+
+        .password-box {
+            background-color: #262933; /* Ciemny kolor tła pola hasła */
+            border-radius: 12px;
+            padding: 15px;
+            margin: 30px 20px 0;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .password-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 10px 40px 10px 0;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            outline: none;
+        }
+
+        .eye-icon {
+            position: absolute;
+            right: 0;
+            color: #888; /* Kolor ikony oka */
+            font-size: 20px;
+        }
+
+        .forgot-password {
+            font-size: 14px;
+            color: #007aff; /* Niebieski kolor linku */
+            text-align: left; /* Wyrównanie jak na zrzucie */
+            margin-top: 15px;
+            cursor: pointer;
+        }
+
+        .footer-area {
+            width: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .login-button {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            background-color: #007aff; /* Niebieski kolor przycisku */
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .version-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 0 20px 20px; /* Wewnętrzny padding, aby wersja nie przylegała do krawędzi */
+        }
+
+        .logos-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .co-logo {
+            height: 20px; /* Wysokość logo CO */
+            margin-right: 5px;
+        }
+
+        .mc-logo {
+            height: 20px; /* Wysokość logo Ministerstwa Cyfryzacji */
+            margin-left: 5px;
+        }
+
+        .version-text {
+            font-size: 12px;
+            color: #555; /* Ciemniejszy kolor tekstu wersji */
+        }
+        
+    </style>
 </head>
 <body>
-<div class="Login_container">
-  <main class="Login_main">
-    <img src="../images/coi_common_ic_mobywatel_horizontal_logo_text.svg" alt="Logo" class="Login_logoTop">
+    <div class="header-content">
+        <div class="logo-row">
+            <img src="https://i.imgur.com/wEDerI2.png" alt="Godło Polski" class="logo-image">
+            <span class="logo-text">mObywatel</span>
+        </div>
+        <p class="welcome-text">Dobry wieczór!</p>
+        <p class="login-prompt">Zaloguj się do aplikacji.</p>
 
-    <div class="Login_changePassword">
-      <img src="../images/aa008_change_password_blue.svg" alt="Change Password" class="Login_changePasswordIcon">
+        <div class="password-box">
+            <span class="password-label">Hasło</span>
+            <div class="input-container">
+                <input type="password" class="password-input" />
+                <i class="fas fa-eye eye-icon"></i> </div>
+            <span class="forgot-password">Nie pamiętasz hasła?</span>
+        </div>
     </div>
 
-    <p style="font-weight:bold;font-size:5vw;margin:2em 0 1em;">Wpisz hasło</p>
-    <div class="Login_bioLogin">
-      <p class="tekst_biometeria">Logowanie biometrią</p>
+    <div class="footer-area">
+        <button class="login-button">Zaloguj się</button>
+        <div class="version-info">
+            <div class="logos-container">
+                <span style="font-size: 18px; font-weight: 700;">CO</span> 
+                <span style="margin-left: 5px; font-size: 12px; color: #fff; font-weight: 500;">Ministerstwo Cyfryzacji</span>
+            </div>
+            <p class="version-text">wersja 4.63.0 (17)</p>
+        </div>
     </div>
-
-    <div class="Login_passwordSection">
-      <p class="Login_passwordLabel">Hasło</p>
-      <div style="position:relative;width:100%">
-        <input type="password" placeholder="Wpisz hasło" class="Login_passwordInput" id="passwordInput">
-      </div>
-      <p class="Login_forgotPassword">Nie pamiętam hasła</p>
-    </div>
-  </main>
-
-  <button class="Login_submitButton" onclick="toHome()">Zaloguj się</button>
-
-  <footer class="Login_footer">
-    <div class="Login_footerImages">
-      <img src="../images/coi_common_ui_ic_coi_mobywatel_logo.svg" style="width:5em;height:auto">
-      <img src="../images/coi_common_ui_ic_mc_mobywatel_logo.svg" style="width:4em;height:auto">
-    </div>
-    <p class="Login_versionText">wersja 4.41.2 (8)</p>
-  </footer>
-</div>
-
-<!-- mDowód modal -->
-<div id="modal" onclick="closeModal(event)">
-  <div class="sheet" onclick="event.stopPropagation()">
-    <div class="handle"></div>
-    <div class="id-card">
-      <div class="id-avatar">PL</div>
-      <div class="id-meta">
-        <label>Imię i nazwisko</label>
-        <input type="text" id="actorName" value="Jan Kowalski">
-        <label>PESEL</label>
-        <input type="text" id="actorPESEL" value="85010112345">
-        <label>Data wydania</label>
-        <input type="text" id="actorIssue" value="2020-10-01">
-        <label>Numer dokumentu</label>
-        <input type="text" id="actorIDNumber" value="PL1234567">
-      </div>
-    </div>
-    <button class="saveBtn" onclick="saveActorData()">Zapisz zmiany</button>
-  </div>
-</div>
-
-<script>
-function toHome(){
-  const pwd = document.getElementById('passwordInput').value;
-  if(pwd){
-    openModal();
-  } else alert('Wpisz hasło');
-}
-
-function openModal(){document.getElementById('modal').classList.add('show')}
-function closeModal(e){if(e && e.target && e.target.id==='modal') document.getElementById('modal').classList.remove('show')}
-document.addEventListener('keydown', e=>{if(e.key==='Escape') closeModal({target:{id:'modal'}})})
-
-function saveActorData(){
-  const name=document.getElementById('actorName').value;
-  const pesel=document.getElementById('actorPESEL').value;
-  const issue=document.getElementById('actorIssue').value;
-  const idnum=document.getElementById('actorIDNumber').value;
-  alert(`Dane zapisane:\nImię i nazwisko: ${name}\nPESEL: ${pesel}\nData wydania: ${issue}\nNumer dokumentu: ${idnum}`);
-}
-</script>
 </body>
 </html>
