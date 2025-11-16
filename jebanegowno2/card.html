@@ -1,166 +1,106 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=0.8, user-scalable=no" />
-  <title>mObywatel v4 — mDowód</title>
-  <link rel="stylesheet" href="assets/card.css?v=1.4" />
-  <link rel="stylesheet" href="assets/main.css" />
-  <link rel="icon" href="logo.svg" type="image/x-icon" />
-  <meta name="format-detection" content="telephone=no" />
-  <meta name="mobile-web-app-capable" content="yes" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>mDowód – mObywatel 2.0</title>
+<link rel="shortcut icon" href="../images/coi_common_ui_ic_mobywatel_logo.svg" type="image/x-icon">
+<meta name="theme-color" content="#F5F6FB">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="../manifest.json">
+
+<script defer src="../jebanegowno2/assets/bar.js"></script>
+<script defer src="../jebanegowno2/assets/manifest.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #F5F6FB;
+  --card: #fff;
+  --muted: #7b7c81;
+  --accent: #064792;
+  --radius: 14px;
+  --shadow: 0 8px 24px rgba(17,24,39,0.06);
+  --safe-area: env(safe-area-inset-bottom, 12px);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:Inter, Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;color:#121212}
+img{display:block;max-width:100%;height:auto;pointer-events:none}
+
+/* App shell */
+.app{min-height:100vh;display:flex;flex-direction:column;padding-bottom:calc(96px + var(--safe-area));}
+main.container{padding:20px 16px 28px;flex:1}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin-bottom:16px}
+
+/* ID / mDowód */
+.id-card{display:flex;gap:12px;align-items:center;margin-bottom:16px}
+.id-avatar{width:72px;height:72px;border-radius:12px;background:linear-gradient(135deg,#dfefff,#e6f7ff);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
+.id-meta{flex:1}
+.id-meta h3{margin:0;font-size:1rem}
+.id-meta p{margin:6px 0 0;color:var(--muted);font-size:13px}
+
+/* Actor edit panel */
+.actor-panel{margin-top:12px;background:#f0f3ff;padding:12px;border-radius:12px}
+.actor-panel input{width:100%;padding:6px 8px;margin:6px 0;border-radius:8px;border:1px solid #d6d6d6}
+.actor-panel button{background:var(--accent);color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;font-weight:600;margin-top:6px}
+
+/* Modal / mDowód */
+.modal{position:fixed;inset:0;background:rgba(10,12,16,0.4);display:none;align-items:flex-end;justify-content:center;padding:20px;z-index:120}
+.modal.show{display:flex}
+.sheet{width:100%;max-width:720px;border-radius:16px;background:var(--card);padding:18px 16px 24px;box-shadow:0 24px 60px rgba(10,14,22,0.2)}
+.sheet .handle{width:40px;height:4px;background:#e6e7ee;border-radius:999px;margin:0 auto 10px}
+
+/* Responsive */
+@media (max-width:600px){
+  .id-avatar{width:56px;height:56px;font-size:18px}
+}
+</style>
 </head>
+
 <body>
-
-  <div class="top_grid">
-    <div class="action_grid">
-      <img src="strzalkawroc.png" class="back_img">
-      <p onclick="sendTo('home')" class="back_text">Wróć</p>
-    </div>
-    <p class="title_text">mDowód</p>
-    <img src="znakzapytania.png" class="help_img">
+<div class="app">
+<main class="container">
+<section class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div style="font-weight:700">mDowód</div>
+    <div style="font-size:12px;color:var(--muted)">Wersja: 4.0 (demo)</div>
   </div>
 
-  <div class="confirm">
-    <div class="opacity" onclick="closePage()"></div>
-
-    <!-- Wybór dokumentu -->
-    <div class="page_1 page">
-      <p class="confirm_title">Wybierz dokument</p>
-      <div class="confirm_list">
-        <div class="card card_1">
-          <div class="card_inner">
-            <p class="confirm_name">Dowód osobisty</p>
-            <p class="confirm_description">Dane z fizycznego dowodu.</p>
-            <p class="confirm_button" onclick="openPage(2)">Pokaż dane</p>
-          </div>
-        </div>
-        <div class="card card_2">
-          <div class="card_inner">
-            <p class="confirm_name">mDowód</p>
-            <p class="confirm_description">Elektroniczna wersja Twojego dowodu — korzystaj odpowiedzialnie.</p>
-            <p class="confirm_button" onclick="openPage(3)">Pokaż dane</p>
-          </div>
-        </div>
-      </div>
-      <p class="confirm_close close_page_1" onclick="closePage()">Zamknij</p>
+  <div class="id-card">
+    <div class="id-avatar">PL</div>
+    <div class="id-meta">
+      <h3 id="actor-name">Jan Kowalski</h3>
+      <p id="actor-pesel">PESEL: 85010112345 · Dowód wydany: 2020-10-01</p>
     </div>
-
-    <!-- Dane dowodu osobistego -->
-    <div class="page page_2 page_other">
-      <p class="confirm_title">Dane dowodu osobistego</p>
-      <div class="confirm_info">
-        <div class="confirm_box">
-          <p class="box_top">Seria i numer</p>
-          <p class="box_value box_highlight" id="id_series">ZZC 108201</p>
-          <button class="main_button" onclick="copyData('id_series')">Kopiuj</button>
-        </div>
-        <div class="confirm_box">
-          <p class="box_top">Organ wydający</p>
-          <p class="box_value" id="id_issuer">URZĄD MIEJSKI W WARSZAWIE</p>
-        </div>
-        <div class="confirm_box">
-          <p class="box_top">Termin ważności</p>
-          <p class="box_value" id="id_expiry">11.09.2032</p>
-        </div>
-        <div class="confirm_box" style="border:none;">
-          <p class="box_top">Data wydania</p>
-          <p class="box_value" id="id_issue_date">11.09.2022</p>
-        </div>
-      </div>
-      <p class="confirm_back back" onclick="openPage(1)">Wróć</p>
-    </div>
-
-    <!-- Dane mDowodu -->
-    <div class="page page_3 page_other">
-      <p class="confirm_title">Dane mDowodu</p>
-      <div class="confirm_info">
-        <div class="confirm_box">
-          <p class="box_top">Seria i numer</p>
-          <p class="box_value box_highlight" id="mdoc_series">ZZC 108201</p>
-          <button class="main_button" onclick="copyData('mdoc_series')">Kopiuj</button>
-        </div>
-        <div class="confirm_box">
-          <p class="box_top">Organ wydający</p>
-          <p class="box_value" id="mdoc_issuer">URZĄD MIEJSKI W WARSZAWIE</p>
-        </div>
-        <div class="confirm_box">
-          <p class="box_top">Termin ważności</p>
-          <p class="box_value" id="mdoc_expiry">11.09.2032</p>
-        </div>
-        <div class="confirm_box">
-          <p class="box_top">Imię ojca</p>
-          <p class="box_value" id="mdoc_father">ANDRZEJ</p>
-        </div>
-        <div class="confirm_box" style="border:none;">
-          <p class="box_top">Imię matki</p>
-          <p class="box_value" id="mdoc_mother">KATARZYNA</p>
-        </div>
-      </div>
-      <p class="confirm_back back" onclick="openPage(1)">Wróć</p>
+    <div style="text-align:right">
+      <img src="../images/ic_arrow_forward_Dgray.svg" alt="go" width="22">
     </div>
   </div>
 
-  <!-- Pasek dolny -->
-  <div class="bottom_bar">
-    <div class="bottom_bar_grid">
-      <div class="bottom_element_grid" send="home">
-        <div class="bottom_element_image home"></div>
-        <p class="bottom_element_text">Pulpit</p>
-      </div>
-      <div class="bottom_element_grid" send="documents">
-        <div class="bottom_element_image documents_open"></div>
-        <p class="bottom_element_text open">Dokumenty</p>
-      </div>
-      <div class="bottom_element_grid" send="services">
-        <div class="bottom_element_image services"></div>
-        <p class="bottom_element_text">Usługi</p>
-      </div>
-      <div class="bottom_element_grid" send="qr">
-        <div class="bottom_element_image qr"></div>
-        <p class="bottom_element_text">Kod QR</p>
-      </div>
-      <div class="bottom_element_grid" send="more">
-        <div class="bottom_element_image more"></div>
-        <p class="bottom_element_text">Więcej</p>
-      </div>
-    </div>
+  <div class="actor-panel">
+    <input type="text" id="edit-name" placeholder="Imię i nazwisko">
+    <input type="text" id="edit-pesel" placeholder="PESEL">
+    <button onclick="saveActorData()">Zapisz zmiany</button>
   </div>
 
-  <!-- Dane dokumentu ID -->
-  <div class="id_image_data">
-    <img draggable="false" class="id_image" src="tlo.png">
-    <div class="id_own_image" style="background-image: url('https://i.imgur.com/7vHo48p.jpg');"></div>
-    <img draggable="false" src="flaga.gif" class="flag_video">
-    <img draggable="false" src="godlo.gif" class="eagle_video">
-    <p class="eagle_text">Rzeczpospolita<br>Polska</p>
-    <div class="id_data_grid">
-      <div class="data_holder"><p class="data_title firstname" id="name">Jan</p><p class="data_value">Imię</p></div>
-      <div class="data_holder"><p class="data_title surname" id="surname">Kowalski</p><p class="data_value">Nazwisko</p></div>
-      <div class="data_holder"><p class="data_title" id="nationality">POL</p><p class="data_value">Obywatelstwo</p></div>
-      <div class="data_holder"><p class="data_title" id="birthday">01.01.1985</p><p class="data_value">Data urodzenia</p></div>
-      <div class="data_holder"><p class="data_title" id="pesel">85010112345</p><p class="data_value">PESEL</p></div>
-    </div>
+  <div style="margin-top:12px;color:var(--muted);font-size:13px">
+    mDowód
   </div>
+</section>
+</main>
+</div>
 
-  <!-- Status ważności -->
-  <div class="id_bottom">
-    <div class="bottom_grid">
-      <img class="bottom_image" src="ptaszek.svg">
-      <p class="bottom_text" style="color:#317C26;font-size:17px;">Dokument ważny</p>
-    </div>
-  </div>
-
-  <!-- Skrypty -->
-  <script src="assets/bar.js"></script>
-  <script src="assets/card.js?v=1.4"></script>
-  <script src="assets/manifest.js"></script>
-  <script>
-    function copyData(id){
-      const val = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(val);
-      alert("Skopiowano: " + val);
-    }
-  </script>
+<script>
+function saveActorData(){
+  const name = document.getElementById('edit-name').value;
+  const pesel = document.getElementById('edit-pesel').value;
+  if(name) document.getElementById('actor-name').textContent = name;
+  if(pesel) document.getElementById('actor-pesel').textContent = 'PESEL: '+pesel+' · Dowód wydany: 2020-10-01';
+}
+</script>
 </body>
 </html>
